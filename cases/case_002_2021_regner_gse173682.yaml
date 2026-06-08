@@ -1,0 +1,63 @@
+case_id: case_002_2021_regner_gse173682
+paper_id: 2021_Regner
+geo_accession: GSE173682
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: gynecologic malignancies
+  assay: matched single-cell RNA-seq and single-cell ATAC-seq
+  organism: Homo sapiens
+  number_of_rna_samples_used_in_original_workflow: 10
+
+input_source:
+  source_database: GEO
+  archive_file: GSE173682_RAW.tar
+  archive_size: 15.8 GB
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE173682&format=file"
+  local_download_policy: skip_full_download_by_default
+  recommended_processing_mode: server_or_hpc
+
+detected_input_format:
+  format_label: per_sample_10x_like_matrix_market_triplets
+  standard_10x_matrix_market: true
+  custom_count_table: false
+  existing_h5ad: false
+  multiome_related_files_detected: true
+
+expected_rna_file_roles_per_sample:
+  - matrix.mtx.gz
+  - features.tsv.gz
+  - barcodes.tsv.gz
+
+additional_file_roles:
+  - ATAC_fragments.tsv.gz
+
+rna_standardization_strategy:
+  - Locate matrix, features and barcodes files per GSM sample.
+  - Read matrix.mtx.gz as a sparse Matrix Market file.
+  - Transpose matrix to cells x genes.
+  - Read barcodes.tsv.gz and assign obs_names.
+  - Prefix barcodes with sample_id to avoid duplicate cell IDs.
+  - Read features.tsv.gz and assign gene symbols as var_names.
+  - Detect and merge duplicated gene symbols by summing counts.
+  - Add manually curated sample-level metadata to adata.obs.
+  - Align common genes across samples.
+  - Concatenate sample AnnData objects.
+  - Validate X, obs and var.
+  - Write standardized h5ad output.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  reason: this case represents a general 10x-like Matrix Market input pattern
+
+data_size_policy:
+  reason: GEO archive is too large for default local personal-computer workflow
+  action: use manifest-based inspection locally and process full data on server/HPC
+  raw_files_should_not_be_kept_locally: true
+
+potential_risks:
+  - Full GEO archive is very large for local machines.
+  - Dataset contains both RNA and ATAC-related files.
+  - ATAC fragments are outside the initial RNA AnnData workflow scope.
+  - Gene symbols can be duplicated and require merging.
+  - Sample metadata must be curated from GEO and/or article-level information.

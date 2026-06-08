@@ -1,0 +1,17 @@
+[project]
+name = "single-cell-input-standardizer"
+version = "0.1.0"
+description = "A Python tool for inspecting single-cell input files and generating AnnData/h5ad standardization workflows."
+requires-python = ">=3.10"
+
+dependencies = [
+    "pandas",
+    "numpy",
+    "scipy",
+    "anndata",
+    "pyyaml",
+    "streamlit"
+]
+
+[tool.setuptools]
+packages = ["src"]
