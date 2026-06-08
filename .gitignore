@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local environments
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Raw downloaded data
+data/**/raw/
+data/**/*.tar
+data/**/*.tar.gz
+data/**/*.gz
+data/**/*.zip
+
+# Large single-cell / omics files
+*.h5ad
+*.h5
+*.loom
+*.mtx
+*.mtx.gz
+
+# Generated local outputs
+data/**/outputs/
+outputs/
+
+# Keep placeholder files if needed
+!outputs/.gitkeep
+!data/**/outputs/.gitkeep

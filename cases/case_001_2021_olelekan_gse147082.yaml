@@ -1,0 +1,146 @@
+case_id: case_001_2021_olelekan_gse147082
+paper_id: 2021_Olelekan
+geo_accession: GSE147082
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  tissue_context: metastatic omental tumor samples
+  number_of_samples: 6
+
+input_source:
+  source_database: GEO
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE147082&format=file"
+  archive_file: GSE147082_RAW.tar
+  raw_file_policy: temporary_download_and_delete_after_processing
+
+raw_files_detected:
+  - GSM4416534_PT-3232.csv.gz
+  - GSM4416535_PT-5150.csv.gz
+  - GSM4416536_PT-6885.csv.gz
+  - GSM4416537_PT-4806.csv.gz
+  - GSM4416538_PT-3401.csv.gz
+  - GSM4416539_PT-2834.csv.gz
+
+detected_input_format:
+  format_label: compressed_csv_count_tables
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: true
+
+raw_table_structure:
+  first_column_name: Unnamed: 0
+  first_column_interpretation: gene_symbol
+  remaining_columns_interpretation: cell_barcodes
+  raw_orientation: genes_x_cells
+  required_transpose_for_anndata: true
+  anndata_constructor: AnnData(df.T)
+
+per_sample_shapes:
+  GSM4416534:
+    patient_id: PT-3232
+    raw_shape_genes_plus_cells: "19297 rows x 1103 columns"
+    anndata_shape: "1102 cells x 19297 genes"
+  GSM4416535:
+    patient_id: PT-5150
+    raw_shape_genes_plus_cells: "24776 rows x 1245 columns"
+    anndata_shape: "1244 cells x 24776 genes"
+  GSM4416536:
+    patient_id: PT-6885
+    raw_shape_genes_plus_cells: "24063 rows x 1072 columns"
+    anndata_shape: "1071 cells x 24063 genes"
+  GSM4416537:
+    patient_id: PT-4806
+    raw_shape_genes_plus_cells: "26499 rows x 1109 columns"
+    anndata_shape: "1108 cells x 26499 genes"
+  GSM4416538:
+    patient_id: PT-3401
+    raw_shape_genes_plus_cells: "32024 rows x 3452 columns"
+    anndata_shape: "3451 cells x 32024 genes"
+  GSM4416539:
+    patient_id: PT-2834
+    raw_shape_genes_plus_cells: "26221 rows x 1910 columns"
+    anndata_shape: "1909 cells x 26221 genes"
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO
+  sample_id_source: GSM accession from filename
+  patient_id_source: filename and GEO metadata
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+  obs_columns:
+    - sample_id
+    - patient_id
+    - dataset_id
+    - cancer_type
+    - tumor_site
+    - metastasis_site
+    - tumor_treatment
+    - cancer_site_origin
+    - tumour_grade
+    - tumour_stage
+    - histological_subtype
+    - patient_ethnicity
+    - source_file
+    - paper_id
+    - geo_accession
+
+var_strategy:
+  var_names_source: gene symbols from first CSV column
+  var_columns:
+    - gene_symbol
+
+gene_alignment_strategy:
+  method: common_gene_intersection
+  reason: samples had different gene sets
+  genes_in_first_sample: 19297
+  common_genes_across_all_samples: 16041
+  concat_join: inner
+
+final_output:
+  file: data/case_001_2021_olelekan/outputs/2021_Olelekan_GSE147082_standardized.h5ad
+  final_shape: "9885 cells x 16041 genes"
+  n_obs: 9885
+  n_vars: 16041
+  n_samples: 6
+  raw_files_deleted_after_processing: true
+
+validation:
+  nan_in_sample_X: false
+  nan_in_combined_X: false
+  nan_in_obs: false
+  nan_in_var: false
+  final_var_gene_symbol_restored_after_concat: true
+
+standardization_recipe:
+  - Download GSE147082_RAW.tar from GEO.
+  - Extract the temporary TAR archive.
+  - Detect GSM-level compressed CSV count tables.
+  - Inspect the first CSV file.
+  - Identify the first column as gene symbols.
+  - Identify remaining columns as cell barcodes.
+  - Interpret raw matrix orientation as genes x cells.
+  - Rename the first column to gene.
+  - Set gene as dataframe index.
+  - Create AnnData using AnnData(df.T).
+  - Assign obs_names from cell barcode columns.
+  - Assign var_names from gene index.
+  - Add gene_symbol to adata.var.
+  - Add sample-level GEO metadata to adata.obs.
+  - Build one AnnData object per sample.
+  - Check NaN values in X, obs, and var.
+  - Align all samples to common genes.
+  - Concatenate sample AnnData objects along cells.
+  - Restore gene_symbol in final adata.var.
+  - Write standardized h5ad output.
+  - Delete raw TAR and CSV.gz files from local storage.
+
+potential_risks:
+  - The files are not in standard 10x Matrix Market format.
+  - Metadata is not provided as a clean cell-level table.
+  - Manual GEO metadata curation is required.
+  - Matrix orientation must be checked before AnnData creation.
+  - Gene sets differ across samples, requiring common-gene alignment before concatenation.
+  - var metadata can be dropped during anndata.concat if not explicitly restored.
