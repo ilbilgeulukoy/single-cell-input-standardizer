@@ -1,0 +1,213 @@
+case_id: case_010_2022_ignacio_gse180661
+paper_id: 2022_Ignacio
+geo_accession: GSE180661
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  study_design: multi-site tumor atlas with rich cell-level clinical metadata
+  cohort_note: large and metadata-rich cohort dataset
+
+input_source:
+  source_database: GEO
+  matrix_file: GSE180661_matrix.h5
+  metadata_file: GSE180661_GEO_cells.tsv.gz
+  matrix_url: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180661/suppl/GSE180661%5Fmatrix%2Eh5"
+  metadata_url: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180661/suppl/GSE180661%5FGEO%5Fcells%2Etsv%2Egz"
+  raw_file_policy: matrix_kept_on_server_metadata_can_be_inspected_locally
+  recommended_processing_mode: server_or_hpc
+  local_action: metadata_only_or_read_only_server_inspection
+  final_h5ad_status: not_generated_locally
+
+server_file_location:
+  server_name: derrick
+  matrix_path: /data/ulukoy/ovarian_cancer/data/2022_Ignacio/a_data_raw/downloaded/GSE180661_matrix.h5
+  metadata_path: /data/ulukoy/ovarian_cancer/data/2022_Ignacio/a_data_raw/downloaded/GSE180661_GEO_cells.tsv.gz
+
+raw_file_summary:
+  matrix_size_gb: 30.32
+  metadata_size_mb: 41
+  matrix_n_obs: 1376121
+  matrix_n_vars: 32223
+  metadata_n_cells: 929690
+  unique_metadata_cell_ids: 929690
+  metadata_cells_found_in_matrix: 929690
+  metadata_cells_missing_from_matrix: 0
+  matrix_cells_without_metadata: 446431
+
+detected_input_format:
+  format_label: huge_existing_h5ad_like_matrix_plus_external_rich_cell_metadata
+  existing_h5ad_like_matrix: true
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  custom_count_table: false
+  external_metadata_table: true
+
+h5_matrix_structure:
+  hdf5_top_level_keys:
+    - X
+    - obs
+    - uns
+    - var
+  read_method_tested: anndata.read_h5ad_backed_read_only
+  read_status: successful
+  matrix_shape: "1376121 cells x 32223 genes"
+  first_obs_names_examples:
+    - SPECTRUM-OV-107_S1_CD45N_RIGHT_ADNEXA_AAACCCACACTGGAAG
+    - SPECTRUM-OV-107_S1_CD45N_RIGHT_ADNEXA_AAACCCAGTAGGAGGG
+    - SPECTRUM-OV-107_S1_CD45N_RIGHT_ADNEXA_AAACGAAAGAGGTATT
+  first_var_names_examples:
+    - MIR1302-2HG
+    - OR4F5
+    - AL627309.1
+    - AL627309.3
+    - AL627309.4
+  existing_obs_columns: []
+  existing_var_columns:
+    - gene_ids
+    - feature_types
+
+external_metadata_structure:
+  file_extension: ".tsv.gz"
+  separator: tab
+  join_key_column: cell_id
+  metadata_shape_preview: "5 rows x 18 columns"
+  metadata_columns:
+    - cell_id
+    - sample
+    - cell_type
+    - percent.mt
+    - nCount_RNA
+    - nFeature_RNA
+    - umap50_1
+    - umap50_2
+    - cluster_label
+    - cluster_label_sub
+    - cell_type_super
+    - patient_id
+    - tumor_subsite
+    - tumor_site
+    - tumor_supersite
+    - sort_parameters
+    - therapy
+    - surgery
+
+metadata_authority_policy:
+  required: true
+  rule: keep_only_cells_present_in_external_metadata
+  reason: all metadata cells are present in matrix, but the matrix contains additional cells without metadata
+  metadata_cells_are_authoritative_subset: true
+  matrix_only_cells_should_be_dropped: true
+  matrix_only_cells_count: 446431
+  final_expected_n_obs_before_gene_cleanup: 929690
+  critical_warning: do_not_subset_using_numeric_metadata_index
+
+metadata_join_strategy:
+  required: true
+  join_key: cell_id
+  matrix_cell_source: AnnData obs_names
+  metadata_cell_source: GEO_cells cell_id column
+  matched_cells: 929690
+  metadata_cells_missing_from_matrix: 0
+  matrix_cells_without_metadata: 446431
+  correct_ordering_rule: set metadata index to cell_id, subset AnnData by metadata index, then reorder metadata with df_meta.loc[adata.obs_names]
+  reusable_module_needed: src/external_metadata_joiner.py
+
+clinical_metadata_harmonization:
+  required: true
+  source_column: tumor_supersite
+  derived_columns:
+    tumor_site:
+      Adnexa: Primary
+      Ascites: Ascites
+      other_values: Metastasis
+    metastasis_site:
+      rule: keep tumor_supersite only when tumor_site is Metastasis, otherwise empty string
+    cancer_site_origin:
+      rule: keep tumor_supersite only when tumor_site is Primary, otherwise empty string
+  constant_columns:
+    dataset_id: GSE180661
+    cancer_type: Ovarian
+    tumor_treatment: No
+    tumour_grade: HGSC
+    tumour_stage: Unknown
+    histological_subtype: Serous
+    patient_ethnicity: Unknown
+  reusable_module_needed: src/clinical_metadata_harmonizer.py
+
+metadata_column_selection:
+  required: true
+  original_rich_metadata: true
+  drop_analysis_specific_columns_if_needed:
+    - cell_type
+    - percent.mt
+    - nCount_RNA
+    - nFeature_RNA
+    - umap50_1
+    - umap50_2
+    - cluster_label
+    - cluster_label_sub
+    - cell_type_super
+    - tumor_subsite
+    - sort_parameters
+    - therapy
+    - surgery
+  reusable_module_needed: src/metadata_column_selector.py
+
+feature_identifier_strategy:
+  required: true
+  detected_identifier_type: gene_symbol
+  mapping_key: dataset_gene_symbol
+  gene_id_column_available: gene_ids
+  feature_type_column_available: feature_types
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Use server-side existing GSE180661_matrix.h5 file.
+  - Use server-side or locally downloaded GSE180661_GEO_cells.tsv.gz metadata file.
+  - Open matrix.h5 as AnnData-like h5ad object.
+  - Read external metadata table.
+  - Set metadata index to cell_id before any subsetting.
+  - Validate that all metadata cell IDs are present in AnnData obs_names.
+  - Keep only cells present in the external metadata table.
+  - Drop matrix-only cells without metadata.
+  - Reorder metadata using df_meta.loc[adata.obs_names].
+  - Attach metadata to adata.obs.
+  - Derive standardized clinical columns from tumor_supersite.
+  - Preserve or drop rich metadata columns according to output mode.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Add standardized gene metadata to adata.var.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Validate X, obs and var.
+  - Write standardized h5ad on server or HPC.
+
+tool_design_implication:
+  reusable_module_needed: src/h5ad_inspector.py
+  metadata_join_module_needed: src/external_metadata_joiner.py
+  clinical_module_needed: src/clinical_metadata_harmonizer.py
+  metadata_selection_module_needed: src/metadata_column_selector.py
+  size_policy_module_needed: src/data_size_policy.py
+  reason: this case introduces a very large h5ad-like matrix with an external rich metadata table that defines the authoritative cell subset
+
+potential_risks:
+  - Matrix is too large for safe laptop processing.
+  - Matrix contains more cells than the external metadata table.
+  - Metadata must be indexed by cell_id before subsetting.
+  - Numeric metadata index must never be used for AnnData subsetting.
+  - Matrix-only cells without metadata should be dropped for standardized cohort output.
+  - Metadata reordering must match adata.obs_names exactly.
+  - Rich metadata columns require careful harmonization and selection.
+  - Full processing may require substantial server RAM and disk space.
