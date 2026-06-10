@@ -1,0 +1,146 @@
+case_id: case_007_2023_guo_gse181955
+paper_id: 2023_Guo
+geo_accession: GSE181955
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  selected_sample_context: primary ovarian cancer and omental metastatic tissues
+
+input_source:
+  source_database: GEO
+  archive_file: GSE181955_RAW.tar
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE181955&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_file_summary:
+  all_csv_files_detected: 8
+  selected_csv_files_with_curated_metadata: 6
+  skipped_csv_files_without_curated_metadata: 2
+  raw_files_removed_after_inspection: 9
+
+raw_files_detected:
+  - GSM5514787_N1_normal_ovary.matrix.csv.gz
+  - GSM5514788_OMT-1_CD45_POS.matrix.csv.gz
+  - GSM5514789_OMT-1_CD45_NEG.matrix.csv.gz
+  - GSM5514790_OMT-3_CD45_POS.matrix.csv.gz
+  - GSM5514791_OMT-3_CD45_NEG.matrix.csv.gz
+  - GSM5514792_T1.matrix.csv.gz
+  - GSM5514793_T6.matrix.csv.gz
+  - GSM5514794_T6_CD45_NEG.matrix.csv.gz
+
+selected_files:
+  - GSM5514788_OMT-1_CD45_POS.matrix.csv.gz
+  - GSM5514789_OMT-1_CD45_NEG.matrix.csv.gz
+  - GSM5514790_OMT-3_CD45_POS.matrix.csv.gz
+  - GSM5514791_OMT-3_CD45_NEG.matrix.csv.gz
+  - GSM5514792_T1.matrix.csv.gz
+  - GSM5514794_T6_CD45_NEG.matrix.csv.gz
+
+skipped_files:
+  - GSM5514787_N1_normal_ovary.matrix.csv.gz
+  - GSM5514793_T6.matrix.csv.gz
+
+detected_input_format:
+  format_label: compressed_csv_count_tables_with_ensembl_feature_ids
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: true
+
+sample_filtering_strategy:
+  required: true
+  method: curated_metadata_dictionary
+  reason: only GSM files with curated metadata were selected for this standardization case
+  selected_samples:
+    - GSM5514788
+    - GSM5514789
+    - GSM5514790
+    - GSM5514791
+    - GSM5514792
+    - GSM5514794
+  skipped_samples:
+    - GSM5514787
+    - GSM5514793
+
+raw_table_structure:
+  file_extension: ".csv.gz"
+  first_column_name: "Unnamed: 0"
+  first_column_interpretation: ensembl_gene_id
+  inferred_feature_identifier_type: ensembl_gene_id
+  remaining_columns_interpretation: cell_barcodes_or_cell_ids
+  preview_shape_first_file: "5 rows x 8951 columns"
+  raw_orientation: genes_or_features_x_cells
+  required_transpose_for_anndata: true
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO_and_article
+  sample_id_source: GSM accession from filename
+  patient_id_source: manual metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+  selected_samples:
+    GSM5514788: OMT-1_CD45_POS
+    GSM5514789: OMT-1_CD45_NEG
+    GSM5514790: OMT-3_CD45_POS
+    GSM5514791: OMT-3_CD45_NEG
+    GSM5514792: T1
+    GSM5514794: T6_CD45_NEG
+
+feature_identifier_strategy:
+  required: true
+  detected_identifier_type: ensembl_gene_id
+  detection_rule: values in first column mostly start with ENSG
+  mapping_key: dataset_gene_ensembl_id
+  reusable_module_needed: src/feature_identifier_type_detector.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_ensembl_id
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download GSE181955_RAW.tar from GEO.
+  - Extract temporary CSV files.
+  - Detect GSM-level .csv.gz count tables.
+  - Select only GSM files with curated metadata.
+  - Report skipped GSM files without curated metadata.
+  - Read each CSV table using pandas.
+  - Rename first column to feature_id.
+  - Detect first column as Ensembl gene IDs.
+  - Set feature_id as dataframe index.
+  - Transpose to cells x genes/features.
+  - Add sample-level metadata to adata.obs.
+  - Align common features across samples.
+  - Concatenate samples.
+  - Generate gene mapping table using dataset_gene_ensembl_id.
+  - Add standardized gene metadata to adata.var.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols by summing counts.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/count_table_standardizer.py
+  secondary_module_needed: src/feature_identifier_type_detector.py
+  additional_module_needed: src/gene_mapping_and_deduplication.py
+  metadata_module_needed: src/metadata_checker.py
+  reason: this case extends CSV count table standardization to Ensembl-like feature IDs and selected-sample metadata filtering
+
+potential_risks:
+  - First column is named Unnamed: 0 and must be renamed.
+  - First column contains Ensembl IDs, not gene symbols.
+  - Incorrect mapping key can break gene metadata reconstruction.
+  - Some GSM files are skipped because curated metadata is missing.
+  - Matrix orientation must be transposed before AnnData creation.
+  - Duplicate gene symbols may appear after Ensembl-to-symbol mapping.
+  - var column to_remove should be dropped before final export if present.
