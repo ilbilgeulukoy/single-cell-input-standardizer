@@ -1,0 +1,131 @@
+case_id: case_004_2021_hippen_gse158937
+paper_id: 2021_Hippen
+geo_accession: GSE158937
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  number_of_samples: 3
+  sample_context: HGSOC samples from three individuals
+
+input_source:
+  source_database: GEO
+  archive_file: GSE158937_RAW.tar
+  archive_size: 110.1 Mb
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE158937&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_files_detected:
+  - GSM4816045_barcodes_16030X2_HJVMLDMXX.tsv.gz
+  - GSM4816045_features_16030X2_HJVMLDMXX.tsv.gz
+  - GSM4816045_matrix_16030X2_HJVMLDMXX.mtx.gz
+  - GSM4816046_barcodes_16030X3_HJTWLDMXX.tsv.gz
+  - GSM4816046_features_16030X3_HJTWLDMXX.tsv.gz
+  - GSM4816046_matrix_16030X3_HJTWLDMXX.mtx.gz
+  - GSM4816047_barcodes_16030X4_HJTWLDMXX.tsv.gz
+  - GSM4816047_features_16030X4_HJTWLDMXX.tsv.gz
+  - GSM4816047_matrix_16030X4_HJTWLDMXX.mtx.gz
+
+detected_input_format:
+  format_label: per_sample_10x_like_matrix_market_triplets
+  standard_10x_matrix_market: true
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: false
+
+file_grouping_strategy:
+  grouping_key: GSM accession prefix
+  required_roles_per_sample:
+    - matrix
+    - features
+    - barcodes
+  detected_samples:
+    GSM4816045:
+      matrix: GSM4816045_matrix_16030X2_HJVMLDMXX.mtx.gz
+      features: GSM4816045_features_16030X2_HJVMLDMXX.tsv.gz
+      barcodes: GSM4816045_barcodes_16030X2_HJVMLDMXX.tsv.gz
+    GSM4816046:
+      matrix: GSM4816046_matrix_16030X3_HJTWLDMXX.mtx.gz
+      features: GSM4816046_features_16030X3_HJTWLDMXX.tsv.gz
+      barcodes: GSM4816046_barcodes_16030X3_HJTWLDMXX.tsv.gz
+    GSM4816047:
+      matrix: GSM4816047_matrix_16030X4_HJTWLDMXX.mtx.gz
+      features: GSM4816047_features_16030X4_HJTWLDMXX.tsv.gz
+      barcodes: GSM4816047_barcodes_16030X4_HJTWLDMXX.tsv.gz
+
+matrix_structure_first_sample:
+  matrix_shape: "36601 genes x 7123 cells"
+  features_shape: "36601 x 3"
+  barcodes_shape: "7123 x 1"
+  raw_orientation: genes_x_cells_before_transpose
+  required_transpose_for_anndata: true
+  feature_id_column: 0
+  gene_symbol_column: 1
+  feature_type_column: 2
+  duplicated_gene_symbols_first_sample: 10
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO
+  sample_id_source: GSM accession from filename
+  patient_id_source: manual metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+  samples:
+    GSM4816045: 16030X2
+    GSM4816046: 16030X3
+    GSM4816047: 16030X4
+
+barcode_strategy:
+  required: true
+  rule: read barcodes.tsv.gz explicitly and assign real cell barcodes to obs_names before adding GSM prefix
+  reason: using default obs_names from matrix reader can lose real barcode identity
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols_first_sample: 10
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+  reason: dense conversion can be unsafe for large single-cell matrices
+
+gene_mapping_strategy:
+  required: true
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+standardization_recipe:
+  - Download GSE158937_RAW.tar from GEO.
+  - Extract temporary Matrix Market files.
+  - Group matrix/features/barcodes files by GSM accession.
+  - Validate that each GSM has one matrix, one features file and one barcodes file.
+  - Read matrix.mtx.gz as sparse Matrix Market.
+  - Read barcodes.tsv.gz explicitly.
+  - Read features.tsv.gz explicitly.
+  - Detect matrix orientation as genes x cells.
+  - Transpose matrix to cells x genes.
+  - Assign GSM-prefixed real barcodes to obs_names.
+  - Assign gene symbols from features column 1 to var_names.
+  - Detect duplicated gene symbols.
+  - Merge duplicated gene symbols using sparse aggregation.
+  - Add sample-level metadata to obs.
+  - Concatenate samples.
+  - Apply gene mapping and cleanup.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  secondary_module_needed: src/gene_mapping_and_deduplication.py
+  additional_module_needed: src/metadata_checker.py
+  reason: this case is a locally processable 10x-like Matrix Market triplet dataset with real barcode assignment and duplicated gene symbols
+
+potential_risks:
+  - Matrix Market files may be genes x cells and require transpose.
+  - Barcodes must be read explicitly from barcodes.tsv.gz.
+  - Features contain Ensembl IDs, gene symbols and feature types.
+  - Duplicated gene symbols must be merged safely.
+  - Dense conversion with toarray can cause memory problems on larger datasets.
+  - Manual metadata dictionary must match detected GSM files.
