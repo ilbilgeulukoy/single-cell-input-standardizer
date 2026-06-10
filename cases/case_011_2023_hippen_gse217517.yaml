@@ -1,0 +1,191 @@
+case_id: case_011_2023_hippen_gse217517
+paper_id: 2023_Hippen
+geo_accession: GSE217517
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: paired bulk and single-cell RNA-seq
+  organism: Homo sapiens
+  study_design: paired bulk and single-cell RNA-seq from high-grade serous ovarian cancer samples
+  selected_modality_for_this_project: single-cell RNA-seq
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE217517_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE217517&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  total_gsm_files_detected: 54
+  selected_single_cell_samples: 8
+  pooled_single_cell_triplets_detected: 2
+  bulk_star_tables_detected: 24
+  raw_files_removed_after_inspection: 55
+
+selected_samples:
+  GSM6720925:
+    patient_id: "2251"
+  GSM6720926:
+    patient_id: "2267"
+  GSM6720927:
+    patient_id: "2283"
+  GSM6720928:
+    patient_id: "2293"
+  GSM6720929:
+    patient_id: "2380"
+  GSM6720930:
+    patient_id: "2428"
+  GSM6720931:
+    patient_id: "2467"
+  GSM6720932:
+    patient_id: "2497"
+
+excluded_files_or_modalities:
+  pooled_single_cell_triplets:
+    - GSM6720933_pooled_single_cell_barcodes_12162021.tsv.gz
+    - GSM6720933_pooled_single_cell_features_12162021.tsv.gz
+    - GSM6720933_pooled_single_cell_matrix_12162021.mtx.gz
+    - GSM6720934_pooled_single_cell_barcodes_01132022.tsv.gz
+    - GSM6720934_pooled_single_cell_features_01132022.tsv.gz
+    - GSM6720934_pooled_single_cell_matrix_01132022.mtx.gz
+  bulk_rna_seq_tables:
+    count: 24
+    examples:
+      - GSM6720935_bulk_chunk_ribo_2251_STAR.tsv.gz
+      - GSM6720943_bulk_dissociated_ribo_2251_STAR.tsv.gz
+      - GSM6720951_bulk_dissociated_polyA_2251_STAR.tsv.gz
+
+detected_input_format:
+  format_label: mixed_archive_per_sample_10x_triplets_plus_pooled_single_cell_plus_bulk
+  selected_format_for_standardization: per_sample_10x_matrix_market_triplets
+  standard_10x_matrix_market: true
+  per_sample_triplets: true
+  pooled_single_cell_triplets_present: true
+  bulk_files_present: true
+  requires_modality_filtering: true
+
+single_cell_file_patterns:
+  selected_matrix_pattern: "GSM*_single_cell_matrix_<patient_id>.mtx.gz"
+  selected_features_pattern: "GSM*_single_cell_features_<patient_id>.tsv.gz"
+  selected_barcodes_pattern: "GSM*_single_cell_barcodes_<patient_id>.tsv.gz"
+  excluded_pooled_pattern: "GSM*_pooled_single_cell_*"
+  excluded_bulk_pattern: "GSM*_bulk_*_STAR.tsv.gz"
+
+first_selected_triplet_inspection:
+  sample_id: GSM6720925
+  patient_id: "2251"
+  matrix_file: GSM6720925_single_cell_matrix_2251.mtx.gz
+  features_file: GSM6720925_single_cell_features_2251.tsv.gz
+  barcodes_file: GSM6720925_single_cell_barcodes_2251.tsv.gz
+  matrix_shape: "36601 genes x 13240 cells"
+  features_shape: "36601 rows x 3 columns"
+  barcodes_shape: "13240 rows x 1 column"
+  feature_columns:
+    - gene_ensembl_id
+    - gene_symbol
+    - feature_type
+  first_feature_examples:
+    - "ENSG00000243485 / MIR1302-2HG / Gene Expression"
+    - "ENSG00000237613 / FAM138A / Gene Expression"
+    - "ENSG00000186092 / OR4F5 / Gene Expression"
+  first_barcode_examples:
+    - AAACCCAAGATTGACA-1
+    - AAACCCAAGCATGGGT-1
+    - AAACCCAAGCGACATG-1
+  matrix_orientation: genes_x_cells_before_transpose
+  transpose_required_for_anndata: true
+  gene_symbol_column_index: 1
+  duplicated_gene_symbols_first_sample: 10
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_source: manually_curated_from_script
+  metadata_level: sample_level
+  per_cell_external_metadata_available: false
+  sample_id_source: GSM accession
+  patient_id_source: filename_suffix_and_curated_dictionary
+  constant_fields:
+    dataset_id: GSE217517
+    cancer_type: Ovarian
+    tumor_site: Unknown
+    metastasis_site: Unknown
+    tumor_treatment: No
+    cancer_site_origin: Unknown
+    tumour_grade: HGSC
+    tumour_stage: Unknown
+    histological_subtype: Serous
+    patient_ethnicity: Unknown
+
+file_matching_strategy:
+  required: true
+  correct_rule: match matrix, features, and barcodes by GSM prefix
+  incorrect_rule_detected_in_original_script: selecting first available matrix/features/barcodes file for every GSM
+  critical_warning: do_not_reuse_the_first_triplet_for_all_samples
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+
+modality_filtering_strategy:
+  required: true
+  keep:
+    - files containing "_single_cell_" but not "_pooled_single_cell_"
+    - GSM6720925 to GSM6720932
+  exclude:
+    - pooled single-cell triplets
+    - bulk_chunk_ribo STAR tables
+    - bulk_dissociated_ribo STAR tables
+    - bulk_dissociated_polyA STAR tables
+  reusable_module_needed: src/modality_filter.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_ensembl_id_available: true
+  gene_symbol_available: true
+  feature_type_available: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols_first_sample: 10
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download GSE217517_RAW.tar temporarily.
+  - Extract all supplementary files.
+  - Detect mixed archive content.
+  - Keep only per-sample single-cell Matrix Market triplets for GSM6720925 to GSM6720932.
+  - Exclude pooled single-cell triplets.
+  - Exclude bulk RNA-seq STAR tables.
+  - Match matrix, features, and barcodes by GSM prefix.
+  - Read each matrix.mtx.gz.
+  - Transpose from genes x cells to cells x genes.
+  - Read barcodes explicitly.
+  - Prefix obs_names with GSM accession to avoid barcode collisions.
+  - Read feature table and use gene symbol column as var_names.
+  - Attach curated sample-level metadata.
+  - Concatenate selected AnnData objects.
+  - Keep common genes if required by project policy.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Validate X, obs, var, sample counts and NaN status.
+  - Write standardized h5ad.
+  - Remove raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  modality_filter_module_needed: src/modality_filter.py
+  metadata_checker_needed: src/metadata_checker.py
+  reason: this case introduces a mixed GEO archive where per-sample single-cell triplets must be separated from pooled single-cell and bulk RNA-seq files
+
+potential_risks:
+  - GEO archive contains multiple modalities.
+  - Pooled single-cell triplets should not be mixed with selected per-sample triplets unless explicitly requested.
+  - Bulk RNA-seq STAR tables should not be parsed as single-cell data.
+  - Matrix/features/barcodes must be matched by GSM prefix.
+  - Original script risks reusing the first triplet for all GSM samples.
+  - Barcode collisions are possible if GSM prefix is not added.
+  - Duplicate gene symbols require sparse aggregation.
