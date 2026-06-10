@@ -1,0 +1,193 @@
+case_id: case_009_2022_zhang_gse165897
+paper_id: 2022_Zhang
+geo_accession: GSE165897
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  study_design: longitudinal primary and interval/post-treatment samples
+  selected_sample_context: paired treatment-naive and interval HGSOC samples
+  number_of_curated_sample_mappings: 22
+
+input_source:
+  source_database: GEO
+  count_matrix_file: GSE165897_UMIcounts_HGSOC.tsv.gz
+  cell_metadata_file: GSE165897_cellInfo_HGSOC.tsv.gz
+  count_matrix_url: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE165nnn/GSE165897/suppl/GSE165897%5FUMIcounts%5FHGSOC%2Etsv%2Egz"
+  cell_metadata_url: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE165nnn/GSE165897/suppl/GSE165897%5FcellInfo%5FHGSOC%2Etsv%2Egz"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_file_summary:
+  downloaded_files: 2
+  raw_files_removed_after_inspection: 2
+  count_matrix_cell_columns: 51786
+  metadata_cell_rows_matched_to_matrix: 51786
+  metadata_cell_rows_unmatched_to_matrix: 0
+
+raw_files_detected:
+  - GSE165897_UMIcounts_HGSOC.tsv.gz
+  - GSE165897_cellInfo_HGSOC.tsv.gz
+
+detected_input_format:
+  format_label: global_tsv_umi_count_matrix_plus_cell_metadata
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: true
+  global_matrix_with_metadata: true
+
+count_matrix_structure:
+  file_extension: ".tsv.gz"
+  separator: tab
+  first_column_name: "Unnamed: 0"
+  first_column_interpretation: gene_symbol
+  remaining_columns_interpretation: cell_ids
+  raw_orientation: genes_x_cells
+  required_transpose_for_anndata: true
+  preview_shape: "5 rows x 51787 columns"
+  number_of_cell_columns: 51786
+
+cell_metadata_structure:
+  file_extension: ".tsv.gz"
+  separator: tab
+  join_key_column: cell
+  sample_column: sample
+  metadata_columns:
+    - cell
+    - sample
+    - patient_id
+    - treatment_phase
+    - anatomical_location
+    - cell_type
+    - cell_subtype
+    - nCount_RNA
+    - nFeature_RNA
+    - percent.mt
+
+metadata_join_strategy:
+  required: true
+  join_key: exact_cell_id
+  matrix_cell_source: count_matrix_columns
+  metadata_cell_source: cell_metadata_cell_column
+  matched_cells: 51786
+  unmatched_cells: 0
+  reusable_module_needed: src/cell_metadata_joiner.py
+
+sample_id_parsing_strategy:
+  required: true
+  source_column: sample
+  parsing_rule: strip string, split by underscore, keep first two tokens, join with underscore
+  example_input: EOC372_primary_Peritoneum
+  example_output: EOC372_primary
+  reusable_module_needed: src/sample_id_parser.py
+
+sample_to_gsm_mapping_strategy:
+  required: true
+  mapping_source: curated_sample_metadata_dictionary
+  parsed_sample_ids_missing_from_dictionary: 0
+  curated_sample_mappings:
+    GSM5057576: EOC1005_primary
+    GSM5057577: EOC1005_interval
+    GSM5057578: EOC136_primary
+    GSM5057579: EOC136_interval
+    GSM5057580: EOC153_primary
+    GSM5057581: EOC153_interval
+    GSM5057582: EOC227_primary
+    GSM5057583: EOC227_interval
+    GSM5057584: EOC349_primary
+    GSM5057585: EOC349_interval
+    GSM5057586: EOC372_primary
+    GSM5057587: EOC372_interval
+    GSM5057588: EOC3_primary
+    GSM5057589: EOC3_interval
+    GSM5057590: EOC443_primary
+    GSM5057591: EOC443_interval
+    GSM5057592: EOC540_primary
+    GSM5057593: EOC540_interval
+    GSM5057594: EOC733_primary
+    GSM5057595: EOC733_interval
+    GSM5057596: EOC87_primary
+    GSM5057597: EOC87_interval
+
+parsed_sample_distribution:
+  EOC1005_interval: 1288
+  EOC1005_primary: 3071
+  EOC136_interval: 3602
+  EOC136_primary: 2501
+  EOC153_interval: 2401
+  EOC153_primary: 1380
+  EOC227_interval: 2015
+  EOC227_primary: 2178
+  EOC349_interval: 1471
+  EOC349_primary: 1483
+  EOC372_interval: 4671
+  EOC372_primary: 711
+  EOC3_interval: 2503
+  EOC3_primary: 3142
+  EOC443_interval: 4463
+  EOC443_primary: 2122
+  EOC540_interval: 2043
+  EOC540_primary: 1921
+  EOC733_interval: 4077
+  EOC733_primary: 1742
+  EOC87_interval: 1491
+  EOC87_primary: 1510
+
+feature_identifier_strategy:
+  required: true
+  detected_identifier_type: gene_symbol
+  mapping_key: dataset_gene_symbol
+  rule: first count matrix column contains gene symbols
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download global UMI count matrix and cell metadata table from GEO.
+  - Read count matrix as tab-separated compressed table.
+  - Treat first column as gene symbols.
+  - Treat remaining columns as cell IDs.
+  - Transpose count matrix to cells x genes.
+  - Create AnnData from the transposed matrix.
+  - Assign obs_names from count matrix cell columns.
+  - Assign var_names from gene symbol column.
+  - Read cell metadata table.
+  - Join metadata to AnnData obs using exact cell IDs.
+  - Parse sample_id from metadata sample column.
+  - Map parsed sample_id to GSM ID using curated dictionary.
+  - Merge curated sample-level metadata into obs.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Add standardized gene metadata to var.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Convert object obs columns to string before export.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/global_matrix_metadata_standardizer.py
+  metadata_join_module_needed: src/cell_metadata_joiner.py
+  sample_parser_module_needed: src/sample_id_parser.py
+  gene_mapping_module_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces a global UMI matrix plus separate cellInfo metadata table, requiring exact cell-ID metadata join and sample parsing
+
+potential_risks:
+  - Count matrix must be transposed before AnnData creation.
+  - Cell IDs must match exactly between matrix columns and metadata cell column.
+  - Metadata merge can silently reorder cells if not indexed correctly.
+  - sample_id must be parsed from the metadata sample column, not from filename.
+  - Parsed sample IDs must be mapped to GSM IDs through a curated dictionary.
+  - Object columns in obs should be converted to string before h5ad export.
+  - Duplicate gene symbols may appear after gene mapping.
