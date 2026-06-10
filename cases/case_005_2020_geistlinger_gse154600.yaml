@@ -1,0 +1,156 @@
+case_id: case_005_2020_geistlinger_gse154600
+paper_id: 2020_Geistlinger
+geo_accession: GSE154600
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  technology: 10x Genomics
+  organism: Homo sapiens
+  number_of_samples: 5
+  sample_context: metastatic omentum samples from high-grade serous ovarian cancer patients
+
+input_source:
+  source_database: GEO
+  archive_file: GSE154600_RAW.tar
+  archive_size: 224.5 Mb
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE154600&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_files_detected:
+  - GSM4675273_T59_barcodes.tsv.gz
+  - GSM4675273_T59_genes.tsv.gz
+  - GSM4675273_T59_matrix.mtx.gz
+  - GSM4675274_T76_barcodes.tsv.gz
+  - GSM4675274_T76_genes.tsv.gz
+  - GSM4675274_T76_matrix.mtx.gz
+  - GSM4675275_T77_barcodes.tsv.gz
+  - GSM4675275_T77_genes.tsv.gz
+  - GSM4675275_T77_matrix.mtx.gz
+  - GSM4675276_T89_barcodes.tsv.gz
+  - GSM4675276_T89_genes.tsv.gz
+  - GSM4675276_T89_matrix.mtx.gz
+  - GSM4675277_T90_barcodes.tsv.gz
+  - GSM4675277_T90_genes.tsv.gz
+  - GSM4675277_T90_matrix.mtx.gz
+
+detected_input_format:
+  format_label: per_sample_10x_like_matrix_market_triplets
+  standard_10x_matrix_market: true
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: false
+
+file_grouping_strategy:
+  grouping_key: GSM accession prefix
+  required_roles_per_sample:
+    - matrix
+    - genes_or_features
+    - barcodes
+  gene_table_variant: genes.tsv.gz
+  detected_samples:
+    GSM4675273:
+      matrix: GSM4675273_T59_matrix.mtx.gz
+      genes: GSM4675273_T59_genes.tsv.gz
+      barcodes: GSM4675273_T59_barcodes.tsv.gz
+    GSM4675274:
+      matrix: GSM4675274_T76_matrix.mtx.gz
+      genes: GSM4675274_T76_genes.tsv.gz
+      barcodes: GSM4675274_T76_barcodes.tsv.gz
+    GSM4675275:
+      matrix: GSM4675275_T77_matrix.mtx.gz
+      genes: GSM4675275_T77_genes.tsv.gz
+      barcodes: GSM4675275_T77_barcodes.tsv.gz
+    GSM4675276:
+      matrix: GSM4675276_T89_matrix.mtx.gz
+      genes: GSM4675276_T89_genes.tsv.gz
+      barcodes: GSM4675276_T89_barcodes.tsv.gz
+    GSM4675277:
+      matrix: GSM4675277_T90_matrix.mtx.gz
+      genes: GSM4675277_T90_genes.tsv.gz
+      barcodes: GSM4675277_T90_barcodes.tsv.gz
+
+matrix_structure_first_sample:
+  matrix_shape: "33538 genes x 16280 cells"
+  gene_table_shape: "33538 x 3"
+  barcodes_shape: "16280 x 1"
+  raw_orientation: genes_x_cells_before_transpose
+  required_transpose_for_anndata: true
+  feature_id_column: 0
+  gene_symbol_column: 1
+  feature_type_column: 2
+  duplicated_gene_symbols_first_sample: 24
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO
+  sample_id_source: GSM accession from filename
+  patient_id_source: manual metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+  samples:
+    GSM4675273: T59
+    GSM4675274: T76
+    GSM4675275: T77
+    GSM4675276: T89
+    GSM4675277: T90
+
+gene_table_strategy:
+  accepted_gene_table_variants:
+    - features.tsv.gz
+    - genes.tsv.gz
+  detected_gene_table_variant: genes.tsv.gz
+  rule: use column 1 as gene symbol if present, otherwise column 0
+  reason: older or exported 10x-like datasets may use genes.tsv.gz instead of features.tsv.gz
+
+barcode_strategy:
+  required: true
+  rule: read barcodes.tsv.gz explicitly and assign real cell barcodes to obs_names before adding GSM prefix
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols_first_sample: 24
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+gene_mapping_strategy:
+  required: true
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+standardization_recipe:
+  - Download GSE154600_RAW.tar from GEO.
+  - Extract temporary Matrix Market files.
+  - Group matrix, genes and barcodes files by GSM accession.
+  - Validate that each GSM has one matrix, one genes/features table and one barcodes file.
+  - Read matrix.mtx.gz as sparse Matrix Market.
+  - Read barcodes.tsv.gz explicitly.
+  - Read genes.tsv.gz as the gene table.
+  - Detect matrix orientation as genes x cells.
+  - Transpose matrix to cells x genes.
+  - Assign GSM-prefixed real barcodes to obs_names.
+  - Assign gene symbols from gene table column 1 to var_names.
+  - Detect duplicated gene symbols.
+  - Add sample-level metadata to obs.
+  - Align common genes if required.
+  - Concatenate samples.
+  - Apply gene mapping and cleanup.
+  - Merge duplicated gene symbols using sparse aggregation.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  secondary_module_needed: src/gene_mapping_and_deduplication.py
+  additional_module_needed: src/metadata_checker.py
+  reason: this case extends the 10x-like Matrix Market detector to support genes.tsv.gz as an alternative gene table
+
+potential_risks:
+  - Matrix Market files may be genes x cells and require transpose.
+  - Gene table may be named genes.tsv.gz instead of features.tsv.gz.
+  - Barcodes must be read explicitly from barcodes.tsv.gz.
+  - Duplicated gene symbols must be merged safely.
+  - Dense conversion with toarray can cause memory problems.
+  - Manual metadata dictionary must match detected GSM files.
