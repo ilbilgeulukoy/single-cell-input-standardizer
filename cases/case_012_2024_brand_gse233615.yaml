@@ -1,0 +1,227 @@
+case_id: case_012_2024_brand_gse233615
+paper_id: 2024_Brand
+geo_accession: GSE233615
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  study_context: fallopian tube and ovarian cancer single-cell analysis
+  selected_modality_for_this_project: single-cell RNA-seq
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE233615_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE233615&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  total_gsm_files_detected: 9
+  selected_10x_h5_files: 9
+  other_files_detected: 0
+  raw_files_removed_after_inspection: 10
+
+detected_input_format:
+  format_label: per_sample_10x_filtered_feature_bc_matrix_h5
+  standard_10x_h5: true
+  standard_10x_matrix_market: false
+  custom_count_table: false
+  per_sample_h5_files: true
+  requires_h5_reader: true
+  read_method_for_final_processing: scanpy.read_10x_h5
+  read_method_for_inspection: h5py
+
+selected_samples:
+  GSM7431434:
+    patient_id: E1
+    tumour_grade: LGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: Non-White
+    n_cells: 3808
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431435:
+    patient_id: E2
+    tumour_grade: LGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: Non-White
+    n_cells: 4726
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431436:
+    patient_id: E3
+    tumour_grade: LGSC
+    tumor_site: Unknown
+    metastasis_site: Left ovary
+    patient_ethnicity: Non-White
+    n_cells: 4408
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431437:
+    patient_id: E4
+    tumour_grade: LGSC
+    tumor_site: Unknown
+    metastasis_site: Right ovary
+    patient_ethnicity: Non-White
+    n_cells: 4470
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431438:
+    patient_id: E7
+    tumour_grade: HGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: White
+    n_cells: 13062
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431439:
+    patient_id: E9
+    tumour_grade: HGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: White
+    n_cells: 5420
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431440:
+    patient_id: E10
+    tumour_grade: HGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: White
+    n_cells: 7406
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431441:
+    patient_id: E11
+    tumour_grade: HGSC
+    tumor_site: Metastasis
+    metastasis_site: Abdominal Wall
+    patient_ethnicity: White
+    n_cells: 8936
+    n_genes: 36601
+    duplicated_feature_names: 10
+  GSM7431442:
+    patient_id: E12
+    tumour_grade: HGSC
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    patient_ethnicity: White
+    n_cells: 13179
+    n_genes: 33538
+    duplicated_feature_names: 24
+
+h5_structure:
+  top_level_keys:
+    - matrix
+  matrix_subkeys:
+    - barcodes
+    - data
+    - features
+    - indices
+    - indptr
+    - shape
+  features_subkeys:
+    - _all_tag_keys
+    - feature_type
+    - genome
+    - id
+    - name
+  raw_orientation: genes_x_cells
+  anndata_orientation_after_read: cells_x_genes
+  feature_id_source: matrix/features/id
+  feature_name_source: matrix/features/name
+  feature_type_source: matrix/features/feature_type
+  barcode_source: matrix/barcodes
+
+sample_file_patterns:
+  h5_pattern: "GSM*_E*_filtered_feature_bc_matrix.h5"
+  sample_id_source: filename_gsm_prefix
+  patient_id_source: filename_second_token
+  patient_token_matches_curated_metadata: true
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_level: sample_level
+  external_cell_metadata_available: false
+  dataset_id: GSE233615
+  cancer_type: Ovarian
+  tumor_treatment: No
+  cancer_site_origin: Fallopian Tube
+  tumour_stage: Unknown
+  histological_subtype: Serous
+  sample_specific_fields:
+    - patient_id
+    - tumor_site
+    - metastasis_site
+    - tumour_grade
+    - patient_ethnicity
+
+gene_universe_strategy:
+  required: true
+  unique_gene_counts_detected:
+    - 33538
+    - 36601
+  warning: one sample has a smaller gene universe than the other eight samples
+  recommended_policy: harmonize_genes_before_or_after_concatenation
+  possible_methods:
+    - common_gene_intersection
+    - outer_join_then_gene_mapping
+  original_script_policy: common_gene_intersection_before_concatenation
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_ensembl_id_available: true
+  gene_symbol_available: true
+  feature_type_available: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_feature_names_detected: true
+  duplicated_feature_names_range: "10 to 24 per sample"
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download GSE233615_RAW.tar temporarily.
+  - Extract 9 per-sample filtered_feature_bc_matrix.h5 files.
+  - Validate that all detected GSMs exist in curated metadata.
+  - Validate that filename patient tokens match curated patient IDs.
+  - Read each h5 file with scanpy.read_10x_h5 during final processing.
+  - Use h5py-only inspection when scanpy is unavailable.
+  - Prefix obs_names with GSM accession if needed to avoid barcode collisions.
+  - Add curated sample-level metadata to obs.
+  - Validate gene universe differences across samples.
+  - Apply common-gene intersection or another explicit harmonization policy.
+  - Concatenate selected AnnData objects.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Convert metastasis_site to string before h5ad write if needed.
+  - Drop to_remove from final var table if present.
+  - Validate X, obs, var, sample counts and NaN status.
+  - Write standardized h5ad.
+  - Remove raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_h5_standardizer.py
+  metadata_checker_needed: src/metadata_checker.py
+  gene_harmonization_needed: src/gene_universe_harmonizer.py
+  gene_mapping_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces per-sample 10x h5 files with consistent metadata matching but different gene universe sizes across samples
+
+potential_risks:
+  - scanpy may not be installed in lightweight inspection environments.
+  - h5py-only inspection should be available for read-only format detection.
+  - One sample has fewer genes than the others.
+  - Duplicate gene names require sparse aggregation.
+  - Barcode collisions are possible if sample prefixes are not added.
+  - Patient ID must be validated from both filename and curated dictionary.
+  - Tumor grade includes both LGSC and HGSC, so grade must remain sample-specific.
