@@ -11,47 +11,76 @@
 
 ## Input pattern
 
-The GEO supplementary archive contains GSM-level `.txt.gz` count tables.
+The GEO supplementary archive contains 8 GSM-level `.txt.gz` count tables:
 
-The previous working script loaded each file using:
+- GSM3729170_P1_dge.txt.gz
+- GSM3729171_P2_dge.txt.gz
+- GSM3729172_P3_dge.txt.gz
+- GSM3729173_P4_dge.txt.gz
+- GSM3729174_M1_dge.txt.gz
+- GSM3729175_M2_dge.txt.gz
+- GSM3729176_R1_dge.txt.gz
+- GSM3729177_R2_dge.txt.gz
 
-scanpy.read_text(fp, delimiter="\t")
+The first inspected file had:
 
-Then transposed the AnnData object:
+- first column: `GENE`
+- remaining columns: cell barcodes
+- preview shape: 5 rows x 9926 columns
 
-adata = adata.T
+Example first genes:
 
-This indicates that the raw table was treated as genes x cells and had to be converted to cells x genes.
+- A1BG
+- A1BG-AS1
+- A2M
+- A2M-AS1
+- A2MP1
 
 ## Main problem
 
-This case has two layers of standardization:
+This case has two standardization layers.
 
-1. Count table orientation and AnnData construction.
-2. Gene identifier cleanup and duplicated gene symbol aggregation.
+First, the raw count table is oriented as:
 
-The second layer is new compared with earlier cases.
+genes x cells
+
+AnnData expects:
+
+cells x genes
+
+Therefore, the object must be transposed.
+
+Second, the gene identifiers need additional cleaning and harmonization.
+
+The previous working script performed:
+
+- gene mapping
+- removal of genes flagged as invalid or unwanted
+- duplicate gene symbol aggregation by summing counts
 
 ## Detection logic
 
 A file belongs to this case type when:
 
 - file extension is `.txt.gz`
-- file starts with GSM accession
-- tab-delimited count table structure is detected
-- previous or inferred orientation is genes x cells
-- gene names require downstream standardization
+- file starts with a GSM accession
+- file is tab-delimited
+- first column is named `GENE`
+- remaining columns are numeric cell barcode count columns
+- raw orientation is genes x cells
 
 ## AnnData recipe
 
-1. Read each TXT count table.
-2. Transpose to cells x genes.
-3. Set obs_names and var_names as strings.
-4. Add sample-level metadata.
-5. Build one AnnData object per sample.
-6. Align common genes.
-7. Concatenate samples.
-8. Validate missing values.
+1. Read each TXT count table using tab delimiter.
+2. Treat the first column as gene symbols.
+3. Treat remaining columns as cell barcodes.
+4. Transpose to cells x genes.
+5. Set obs_names and var_names as strings.
+6. Add sample-level metadata.
+7. Build one AnnData object per sample.
+8. Align common genes.
+9. Concatenate samples.
+10. Validate missing values.
 
 ## Gene mapping recipe
 
@@ -76,4 +105,4 @@ This case supports a new module:
 
 `gene_mapping_and_deduplication`
 
-This module should generalize the previous project-specific `SampleGeneMapGenerator` logic.
+It also expands `count_table_standardizer` because TXT/TSV gene-by-cell tables should be treated as part of the same general count-table family as CSV count tables.

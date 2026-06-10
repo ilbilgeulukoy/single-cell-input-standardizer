@@ -19,6 +19,16 @@ input_source:
   raw_file_policy: temporary_download_and_delete_after_processing
   recommended_processing_mode: local_temporary_download
 
+raw_files_detected:
+  - GSM3729170_P1_dge.txt.gz
+  - GSM3729171_P2_dge.txt.gz
+  - GSM3729172_P3_dge.txt.gz
+  - GSM3729173_P4_dge.txt.gz
+  - GSM3729174_M1_dge.txt.gz
+  - GSM3729175_M2_dge.txt.gz
+  - GSM3729176_R1_dge.txt.gz
+  - GSM3729177_R2_dge.txt.gz
+
 detected_input_format:
   format_label: compressed_txt_count_tables
   standard_10x_matrix_market: false
@@ -28,8 +38,10 @@ detected_input_format:
 
 raw_table_structure:
   file_extension: ".txt.gz"
-  first_column_interpretation: gene_symbol_or_feature_id
-  remaining_columns_interpretation: cell_barcodes_or_cell_ids
+  first_column_name: "GENE"
+  first_column_interpretation: gene_symbol
+  remaining_columns_interpretation: cell_barcodes
+  preview_shape_first_file: "5 rows x 9926 columns"
   raw_orientation: genes_x_cells
   required_transpose_for_anndata: true
   previous_working_loader: "scanpy.read_text(fp, delimiter='\\t').T"
@@ -39,6 +51,15 @@ metadata_strategy:
   sample_id_source: GSM accession from filename
   patient_id_source: filename and manual metadata dictionary
   metadata_expansion: sample-level metadata added to every cell in adata.obs
+  samples:
+    GSM3729170: P1
+    GSM3729171: P2
+    GSM3729172: P3
+    GSM3729173: P4
+    GSM3729174: M1
+    GSM3729175: M2
+    GSM3729176: R1
+    GSM3729177: R2
 
 gene_mapping_strategy:
   required: true
@@ -55,6 +76,8 @@ standardization_recipe:
   - Extract temporary TXT files.
   - Detect GSM-level .txt.gz count tables.
   - Read each TXT table using tab delimiter.
+  - Detect first column as gene symbols.
+  - Detect remaining columns as cell barcodes.
   - Transpose to cells x genes.
   - Add sample-level metadata to adata.obs.
   - Align common genes across samples.
@@ -69,7 +92,8 @@ standardization_recipe:
 
 tool_design_implication:
   reusable_module_needed: src/gene_mapping_and_deduplication.py
-  reason: this case introduces gene mapping, gene cleanup and duplicated symbol aggregation after count table ingestion
+  secondary_module_needed: src/count_table_standardizer.py
+  reason: this case introduces TXT gene-by-cell count tables plus gene mapping, gene cleanup and duplicated symbol aggregation
 
 potential_risks:
   - TXT count tables are not standard 10x format.
