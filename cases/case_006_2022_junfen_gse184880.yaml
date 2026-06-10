@@ -1,0 +1,196 @@
+case_id: case_006_2022_junfen_gse184880
+paper_id: 2022_Junfen
+geo_accession: GSE184880
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  number_of_selected_samples: 7
+  selected_sample_type: Cancer samples
+  sample_context: treatment-naive primary HGSOC cancer samples
+
+input_source:
+  source_database: GEO
+  archive_file: GSE184880_RAW.tar
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE184880&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_file_summary:
+  all_gsm_files_detected: 36
+  selected_cancer_files_detected: 21
+  raw_files_removed_after_inspection: 37
+
+raw_files_detected:
+  - GSM5599225_Cancer1.barcodes.tsv.gz
+  - GSM5599225_Cancer1.genes.tsv.gz
+  - GSM5599225_Cancer1.matrix.mtx.gz
+  - GSM5599226_Cancer2.barcodes.tsv.gz
+  - GSM5599226_Cancer2.genes.tsv.gz
+  - GSM5599226_Cancer2.matrix.mtx.gz
+  - GSM5599227_Cancer3.barcodes.tsv.gz
+  - GSM5599227_Cancer3.genes.tsv.gz
+  - GSM5599227_Cancer3.matrix.mtx.gz
+  - GSM5599228_Cancer4.barcodes.tsv.gz
+  - GSM5599228_Cancer4.genes.tsv.gz
+  - GSM5599228_Cancer4.matrix.mtx.gz
+  - GSM5599229_Cancer5.barcodes.tsv.gz
+  - GSM5599229_Cancer5.genes.tsv.gz
+  - GSM5599229_Cancer5.matrix.mtx.gz
+  - GSM5599230_Cancer6.barcodes.tsv.gz
+  - GSM5599230_Cancer6.genes.tsv.gz
+  - GSM5599230_Cancer6.matrix.mtx.gz
+  - GSM5599231_Cancer7.barcodes.tsv.gz
+  - GSM5599231_Cancer7.genes.tsv.gz
+  - GSM5599231_Cancer7.matrix.mtx.gz
+
+detected_input_format:
+  format_label: cancer_only_10x_like_matrix_market_triplets
+  standard_10x_matrix_market: true
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: false
+
+sample_filtering_strategy:
+  required: true
+  filter_keyword: "_Cancer"
+  reason: archive contains both cancer and non-malignant files, but this case selects only cancer samples
+  selected_samples:
+    - GSM5599225
+    - GSM5599226
+    - GSM5599227
+    - GSM5599228
+    - GSM5599229
+    - GSM5599230
+    - GSM5599231
+
+file_grouping_strategy:
+  grouping_key: GSM accession prefix
+  filename_role_separator_pattern: dot_separated
+  role_patterns:
+    matrix: ".matrix.mtx.gz"
+    genes: ".genes.tsv.gz"
+    barcodes: ".barcodes.tsv.gz"
+  required_roles_per_sample:
+    - matrix
+    - genes_or_features
+    - barcodes
+  gene_table_variant: genes.tsv.gz
+  detected_samples:
+    GSM5599225:
+      matrix: GSM5599225_Cancer1.matrix.mtx.gz
+      genes: GSM5599225_Cancer1.genes.tsv.gz
+      barcodes: GSM5599225_Cancer1.barcodes.tsv.gz
+    GSM5599226:
+      matrix: GSM5599226_Cancer2.matrix.mtx.gz
+      genes: GSM5599226_Cancer2.genes.tsv.gz
+      barcodes: GSM5599226_Cancer2.barcodes.tsv.gz
+    GSM5599227:
+      matrix: GSM5599227_Cancer3.matrix.mtx.gz
+      genes: GSM5599227_Cancer3.genes.tsv.gz
+      barcodes: GSM5599227_Cancer3.barcodes.tsv.gz
+    GSM5599228:
+      matrix: GSM5599228_Cancer4.matrix.mtx.gz
+      genes: GSM5599228_Cancer4.genes.tsv.gz
+      barcodes: GSM5599228_Cancer4.barcodes.tsv.gz
+    GSM5599229:
+      matrix: GSM5599229_Cancer5.matrix.mtx.gz
+      genes: GSM5599229_Cancer5.genes.tsv.gz
+      barcodes: GSM5599229_Cancer5.barcodes.tsv.gz
+    GSM5599230:
+      matrix: GSM5599230_Cancer6.matrix.mtx.gz
+      genes: GSM5599230_Cancer6.genes.tsv.gz
+      barcodes: GSM5599230_Cancer6.barcodes.tsv.gz
+    GSM5599231:
+      matrix: GSM5599231_Cancer7.matrix.mtx.gz
+      genes: GSM5599231_Cancer7.genes.tsv.gz
+      barcodes: GSM5599231_Cancer7.barcodes.tsv.gz
+
+matrix_structure_first_sample:
+  matrix_shape: "27984 genes x 8823 cells"
+  gene_table_shape: "27984 x 3"
+  barcodes_shape: "8823 x 1"
+  raw_orientation: genes_x_cells_before_transpose
+  required_transpose_for_anndata: true
+  feature_id_column: 0
+  gene_symbol_column: 1
+  feature_type_column: 2
+  duplicated_gene_symbols_first_sample: 20
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO
+  sample_id_source: GSM accession from filename
+  patient_id_source: Cancer sample label from filename and metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+  samples:
+    GSM5599225: Cancer1
+    GSM5599226: Cancer2
+    GSM5599227: Cancer3
+    GSM5599228: Cancer4
+    GSM5599229: Cancer5
+    GSM5599230: Cancer6
+    GSM5599231: Cancer7
+
+gene_table_strategy:
+  accepted_gene_table_variants:
+    - features.tsv.gz
+    - genes.tsv.gz
+  detected_gene_table_variant: genes.tsv.gz
+  rule: use column 1 as gene symbol if present, otherwise column 0
+
+barcode_strategy:
+  required: true
+  rule: read barcodes.tsv.gz explicitly and assign real cell barcodes to obs_names before adding GSM prefix
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols_first_sample: 20
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+gene_mapping_strategy:
+  required: true
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+standardization_recipe:
+  - Download GSE184880_RAW.tar from GEO.
+  - Extract temporary Matrix Market files.
+  - Filter files to keep only Cancer samples.
+  - Group matrix, genes and barcodes files by GSM accession.
+  - Support dot-separated role patterns such as .matrix. .genes. and .barcodes.
+  - Validate that each selected GSM has one matrix, one genes/features table and one barcodes file.
+  - Read matrix.mtx.gz as sparse Matrix Market.
+  - Read barcodes.tsv.gz explicitly.
+  - Read genes.tsv.gz as the gene table.
+  - Detect matrix orientation as genes x cells.
+  - Transpose matrix to cells x genes.
+  - Assign GSM-prefixed real barcodes to obs_names.
+  - Assign gene symbols from gene table column 1 to var_names.
+  - Add sample-level metadata to obs.
+  - Align common genes if required.
+  - Concatenate samples.
+  - Apply gene mapping and cleanup.
+  - Merge duplicated gene symbols using sparse aggregation.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  secondary_module_needed: src/gene_mapping_and_deduplication.py
+  additional_module_needed: src/metadata_checker.py
+  reason: this case extends the 10x-like Matrix Market detector to support Cancer-only filtering and dot-separated role patterns
+
+potential_risks:
+  - Archive contains both cancer and non-malignant files.
+  - Incorrect filtering could include unwanted sample types.
+  - Matrix Market role names use dot-separated filename patterns.
+  - Gene table is named genes.tsv.gz rather than features.tsv.gz.
+  - Matrix files may be genes x cells and require transpose.
+  - Barcodes must be read explicitly from barcodes.tsv.gz.
+  - Duplicated gene symbols must be merged safely.
+  - Manual metadata dictionary must match the filtered GSM files.
