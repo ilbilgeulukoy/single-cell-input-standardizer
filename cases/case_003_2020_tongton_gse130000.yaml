@@ -1,0 +1,80 @@
+case_id: case_003_2020_tongton_gse130000
+paper_id: 2020_Tongton
+geo_accession: GSE130000
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: ovarian cancer
+  assay: single-cell RNA-seq
+  technology: Drop-seq
+  organism: Homo sapiens
+  number_of_samples: 8
+  reported_cells: 13369
+
+input_source:
+  source_database: GEO
+  archive_file: GSE130000_RAW.tar
+  archive_size: 56.9 Mb
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE130000&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+detected_input_format:
+  format_label: compressed_txt_count_tables
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: true
+
+raw_table_structure:
+  file_extension: ".txt.gz"
+  first_column_interpretation: gene_symbol_or_feature_id
+  remaining_columns_interpretation: cell_barcodes_or_cell_ids
+  raw_orientation: genes_x_cells
+  required_transpose_for_anndata: true
+  previous_working_loader: "scanpy.read_text(fp, delimiter='\\t').T"
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO_article_and_supplement
+  sample_id_source: GSM accession from filename
+  patient_id_source: filename and manual metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+
+gene_mapping_strategy:
+  required: true
+  purpose:
+    - map dataset gene symbols to standardized gene identifiers
+    - remove invalid or unwanted gene entries
+    - handle antisense, loci, contig or non-standard gene names
+    - aggregate duplicated gene symbols by summing counts
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+standardization_recipe:
+  - Download GSE130000_RAW.tar from GEO.
+  - Extract temporary TXT files.
+  - Detect GSM-level .txt.gz count tables.
+  - Read each TXT table using tab delimiter.
+  - Transpose to cells x genes.
+  - Add sample-level metadata to adata.obs.
+  - Align common genes across samples.
+  - Concatenate samples.
+  - Generate gene mapping table.
+  - Add standardized gene metadata to adata.var.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols by summing counts.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces gene mapping, gene cleanup and duplicated symbol aggregation after count table ingestion
+
+potential_risks:
+  - TXT count tables are not standard 10x format.
+  - Matrix orientation must be checked before AnnData creation.
+  - Manual metadata curation is required.
+  - Gene symbols may contain invalid, antisense, contig or non-standard entries.
+  - Duplicate gene symbols must be aggregated to avoid duplicated var_names.
+  - Previous workflow depends on a project-specific SampleGeneMapGenerator that must be generalized.
