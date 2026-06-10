@@ -1,0 +1,174 @@
+case_id: case_008_2018_shih_gse118828
+paper_id: 2018_Shih
+geo_accession: GSE118828
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: serous epithelial ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  selected_sample_context: primary and metastatic ovarian tumor samples
+  number_of_selected_samples: 16
+
+input_source:
+  source_database: GEO
+  archive_file: GSE118828_RAW.tar
+  download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE118828&format=file"
+  raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
+
+raw_file_summary:
+  all_csv_files_detected: 18
+  selected_csv_files_with_curated_metadata: 16
+  skipped_csv_files_without_curated_metadata: 2
+  raw_files_removed_after_inspection: 19
+
+raw_files_detected:
+  - GSM3348303_553_Perit_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348304_565_Cystadenoma_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348305_589_Omentum_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348306_618_Ovary_S1.counts.umiCounts.table.csv.gz
+  - GSM3348307_TB10040568_NORMAL_S1.counts.umiCounts.table.csv.gz
+  - GSM3348308_TB10040568_TUMOR_S1.counts.umiCounts.table.csv.gz
+  - GSM3348309_TB10040580_S1.counts.umiCounts.table.csv.gz
+  - GSM3348310_TB10040580met_S1_1_.counts.umiCounts.table.csv.gz
+  - GSM3348311_TB10040589_4_S1.counts.umiCounts.table.csv.gz
+  - GSM3348312_TB10040589met_S1.counts.umiCounts.table.csv.gz
+  - GSM3348313_TB10040600_CD31_S1.counts.umiCounts.table.csv.gz
+  - GSM3348314_TB10040600_NP-1_S1.counts.umiCounts.table.csv.gz
+  - GSM3348315_TB10040600_NP-2_S1.counts.umiCounts.table.csv.gz
+  - GSM3348316_TB10040600_Tumor_S1.counts.umiCounts.table.csv.gz
+  - GSM3348317_TB10040626_OMENTUM_S1.counts.umiCounts.table.csv.gz
+  - GSM3348318_TB10040626_TUMOR_S1.counts.umiCounts.table.csv.gz
+  - GSM3348319_V00331081_Primary_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348320_V00331151_Metastatic_S1.counts.umiCounts.aboveBackground.table.csv.gz
+
+selected_files:
+  - GSM3348303_553_Perit_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348305_589_Omentum_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348306_618_Ovary_S1.counts.umiCounts.table.csv.gz
+  - GSM3348308_TB10040568_TUMOR_S1.counts.umiCounts.table.csv.gz
+  - GSM3348309_TB10040580_S1.counts.umiCounts.table.csv.gz
+  - GSM3348310_TB10040580met_S1_1_.counts.umiCounts.table.csv.gz
+  - GSM3348311_TB10040589_4_S1.counts.umiCounts.table.csv.gz
+  - GSM3348312_TB10040589met_S1.counts.umiCounts.table.csv.gz
+  - GSM3348313_TB10040600_CD31_S1.counts.umiCounts.table.csv.gz
+  - GSM3348314_TB10040600_NP-1_S1.counts.umiCounts.table.csv.gz
+  - GSM3348315_TB10040600_NP-2_S1.counts.umiCounts.table.csv.gz
+  - GSM3348316_TB10040600_Tumor_S1.counts.umiCounts.table.csv.gz
+  - GSM3348317_TB10040626_OMENTUM_S1.counts.umiCounts.table.csv.gz
+  - GSM3348318_TB10040626_TUMOR_S1.counts.umiCounts.table.csv.gz
+  - GSM3348319_V00331081_Primary_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348320_V00331151_Metastatic_S1.counts.umiCounts.aboveBackground.table.csv.gz
+
+skipped_files:
+  - GSM3348304_565_Cystadenoma_S1.counts.umiCounts.aboveBackground.table.csv.gz
+  - GSM3348307_TB10040568_NORMAL_S1.counts.umiCounts.table.csv.gz
+
+detected_input_format:
+  format_label: compressed_csv_cell_by_gene_count_tables
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  existing_h5ad: false
+  custom_count_table: true
+
+sample_filtering_strategy:
+  required: true
+  method: curated_metadata_dictionary
+  reason: two GSM files were skipped because curated metadata was not provided for this standardization case
+  selected_samples:
+    - GSM3348303
+    - GSM3348305
+    - GSM3348306
+    - GSM3348308
+    - GSM3348309
+    - GSM3348310
+    - GSM3348311
+    - GSM3348312
+    - GSM3348313
+    - GSM3348314
+    - GSM3348315
+    - GSM3348316
+    - GSM3348317
+    - GSM3348318
+    - GSM3348319
+    - GSM3348320
+  skipped_samples:
+    - GSM3348304
+    - GSM3348307
+
+raw_table_structure:
+  file_extension: ".csv.gz"
+  first_column_name: "CellId"
+  first_column_interpretation: cell_id
+  remaining_columns_interpretation: gene_symbols
+  preview_shape_first_file: "5 rows x 26365 columns"
+  raw_orientation: cells_x_genes
+  required_transpose_for_anndata: false
+
+cell_id_strategy:
+  required: true
+  cell_id_column: CellId
+  rule: use CellId column as obs_names and drop it from expression matrix before AnnData construction
+
+feature_identifier_strategy:
+  required: true
+  detected_identifier_type: gene_symbol
+  mapping_key: dataset_gene_symbol
+  rule: remaining dataframe columns are gene symbols
+
+metadata_strategy:
+  type: manually_curated_sample_level_metadata_from_GEO_and_article_table
+  sample_id_source: GSM accession from filename
+  patient_id_source: manual metadata dictionary
+  metadata_expansion: sample-level metadata added to every cell in adata.obs
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  previous_custom_component: SampleGeneMapGenerator
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download GSE118828_RAW.tar from GEO.
+  - Extract temporary CSV files.
+  - Detect GSM-level .csv.gz count tables.
+  - Select only GSM files with curated metadata.
+  - Report skipped GSM files without curated metadata.
+  - Read each CSV table using pandas.
+  - Detect CellId column.
+  - Use CellId values as obs_names.
+  - Drop CellId from expression matrix.
+  - Build AnnData directly with cells x genes matrix.
+  - Do not transpose.
+  - Assign remaining columns as var_names.
+  - Add sample-level metadata to adata.obs.
+  - Align common genes across samples.
+  - Concatenate samples.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Add standardized gene metadata to adata.var.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols by summing counts.
+  - Validate X, obs and var.
+  - Write standardized h5ad.
+  - Delete raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/count_table_standardizer.py
+  secondary_module_needed: src/orientation_detector.py
+  additional_module_needed: src/gene_mapping_and_deduplication.py
+  metadata_module_needed: src/metadata_checker.py
+  reason: this case extends CSV count table standardization to CellId-based cell-by-gene matrices that do not require transposition
+
+potential_risks:
+  - CellId column must not be treated as a gene.
+  - Matrix should not be transposed.
+  - Some GSM files are skipped because curated metadata is missing.
+  - Gene columns are gene symbols and should use dataset_gene_symbol mapping.
+  - Duplicate gene symbols may appear after mapping.
+  - Manual metadata dictionary must match selected GSM files.
