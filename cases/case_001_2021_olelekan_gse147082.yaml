@@ -15,6 +15,7 @@ input_source:
   download_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE147082&format=file"
   archive_file: GSE147082_RAW.tar
   raw_file_policy: temporary_download_and_delete_after_processing
+  recommended_processing_mode: local_temporary_download
 
 raw_files_detected:
   - GSM4416534_PT-3232.csv.gz
@@ -32,7 +33,7 @@ detected_input_format:
   custom_count_table: true
 
 raw_table_structure:
-  first_column_name: Unnamed: 0
+  first_column_name: "Unnamed: 0"
   first_column_interpretation: gene_symbol
   remaining_columns_interpretation: cell_barcodes
   raw_orientation: genes_x_cells
@@ -144,3 +145,8 @@ potential_risks:
   - Matrix orientation must be checked before AnnData creation.
   - Gene sets differ across samples, requiring common-gene alignment before concatenation.
   - var metadata can be dropped during anndata.concat if not explicitly restored.
+
+
+tool_design_implication:
+  reusable_module_needed: src/count_table_standardizer.py
+  reason: this case represents custom compressed CSV count tables with genes x cells orientation

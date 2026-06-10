@@ -33,3 +33,6 @@ outputs/
 # Keep placeholder files if needed
 !outputs/.gitkeep
 !data/**/outputs/.gitkeep
+
+# Generated SQLite case index
+database/*.db
