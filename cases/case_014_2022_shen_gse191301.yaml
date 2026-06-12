@@ -1,0 +1,224 @@
+case_id: case_014_2022_shen_gse191301
+paper_id: 2022_Shen
+geo_accession: GSE191301
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian carcinoma
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  treatment_context: pre- and post-neoadjuvant chemotherapy
+  selected_modality_for_this_project: single-cell RNA-seq
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE191301_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE191301&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  total_gsm_files_detected: 18
+  matrix_files_detected: 6
+  feature_files_detected: 6
+  barcode_files_detected: 6
+  complete_triplets_detected: 6
+  other_files_detected: 0
+  raw_files_removed_after_inspection: 19
+
+detected_input_format:
+  format_label: per_sample_10x_matrix_market_triplets_pre_post_nact
+  standard_10x_matrix_market: true
+  standard_10x_h5: false
+  custom_count_table: false
+  per_sample_triplets: true
+  requires_gsm_prefix_matching: true
+  requires_treatment_metadata_validation: true
+
+selected_samples:
+  GSM5743307:
+    patient_id: Pre-NACT1A
+    treatment_phase: Pre-NACT
+    tumor_treatment: No
+    metastasis_site: Peritoneum
+    n_cells: 6456
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+  GSM5743308:
+    patient_id: Pre-NACT1B
+    treatment_phase: Pre-NACT
+    tumor_treatment: No
+    metastasis_site: Omentum
+    n_cells: 8372
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+  GSM5743309:
+    patient_id: Pre-NACT1C
+    treatment_phase: Pre-NACT
+    tumor_treatment: No
+    metastasis_site: Ascites
+    n_cells: 7850
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+  GSM5743310:
+    patient_id: Post-NACT1D
+    treatment_phase: Post-NACT
+    tumor_treatment: Yes
+    metastasis_site: Peritoneum
+    n_cells: 5431
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+  GSM5743311:
+    patient_id: Post-NACT1E
+    treatment_phase: Post-NACT
+    tumor_treatment: Yes
+    metastasis_site: Omentum
+    n_cells: 5784
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+  GSM5743312:
+    patient_id: Post-NACT1F
+    treatment_phase: Post-NACT
+    tumor_treatment: Yes
+    metastasis_site: Ascites
+    n_cells: 7887
+    n_genes: 27984
+    duplicated_gene_symbols: 20
+
+sample_summary:
+  total_cells: 41780
+  unique_gene_counts:
+    - 27984
+  samples_pre_nact: 3
+  samples_post_nact: 3
+  metastatic_sites:
+    - Peritoneum
+    - Omentum
+    - Ascites
+
+file_patterns:
+  matrix_pattern: "GSM*_matrix.mtx.gz"
+  features_pattern: "GSM*_features.tsv.gz"
+  barcodes_pattern: "GSM*_barcodes.tsv.gz"
+  naming_examples:
+    - GSM5743307_Pre-NACT1A_matrix.mtx.gz
+    - GSM5743307_Pre-NACT1A_features.tsv.gz
+    - GSM5743307_Pre-NACT1A_barcodes.tsv.gz
+  pattern_variation_note: original script mixed _matrix and _matrix. matching logic; detector should support robust matrix/features/barcodes role detection
+
+triplet_matching_strategy:
+  required: true
+  correct_rule: match matrix, features and barcodes by GSM prefix
+  incorrect_rule_detected_in_original_script: mtx_files[0], feat_files[0], bc_files[0] used inside GSM loop
+  critical_warning: do_not_reuse_first_triplet_for_all_samples
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+
+first_triplet_inspection:
+  sample_id: GSM5743307
+  patient_id: Pre-NACT1A
+  matrix_file: GSM5743307_Pre-NACT1A_matrix.mtx.gz
+  features_file: GSM5743307_Pre-NACT1A_features.tsv.gz
+  barcodes_file: GSM5743307_Pre-NACT1A_barcodes.tsv.gz
+  matrix_shape: "27984 genes x 6456 cells"
+  expected_anndata_shape: "6456 cells x 27984 genes"
+  features_shape: "27984 rows x 3 columns"
+  barcodes_shape: "6456 rows x 1 column"
+  matrix_orientation: genes_x_cells_before_transpose
+  transpose_required_for_anndata: true
+  gene_symbol_column_index: 1
+  duplicated_gene_symbols: 20
+  first_feature_examples:
+    - "ENSG00000243485 / MIR1302-2HG / Gene Expression"
+    - "ENSG00000237613 / FAM138A / Gene Expression"
+    - "ENSG00000186092 / OR4F5 / Gene Expression"
+    - "ENSG00000238009 / AL627309.1 / Gene Expression"
+    - "ENSG00000239945 / AL627309.3 / Gene Expression"
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_level: sample_level
+  external_cell_metadata_available: false
+  dataset_id: GSE191301
+  cancer_type: Ovarian
+  tumor_site: Metastasis
+  cancer_site_origin: Fallopian Tube
+  tumour_grade: HGSC
+  tumour_stage: IIIc
+  histological_subtype: Serous
+  patient_ethnicity: Unknown
+  treatment_phase_source: patient_id_prefix
+  sample_specific_fields:
+    - patient_id
+    - metastasis_site
+    - tumor_treatment
+
+treatment_metadata_validation:
+  required: true
+  pre_nact_samples:
+    - GSM5743307
+    - GSM5743308
+    - GSM5743309
+  post_nact_samples:
+    - GSM5743310
+    - GSM5743311
+    - GSM5743312
+  validation_rule: Pre-NACT samples should have tumor_treatment No, Post-NACT samples should have tumor_treatment Yes
+  reusable_module_needed: src/metadata_checker.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_ensembl_id_available: true
+  gene_symbol_available: true
+  feature_type_available: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols_per_sample: 20
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+original_script_issues:
+  - variable gsm is used before definition in the first exploratory adata.obs_names assignment
+  - loop recomputes file lists but selects mtx_files[0], feat_files[0], bc_files[0]
+  - this risks assigning the first triplet to every GSM sample
+  - correct logic must select files by current GSM prefix
+  - file pattern detector should not be overly strict about dot versus underscore naming variants
+
+standardization_recipe:
+  - Download GSE191301_RAW.tar temporarily.
+  - Extract all supplementary files.
+  - Detect 6 per-sample Matrix Market triplets.
+  - Validate all detected GSMs against curated sample metadata.
+  - Match matrix, features and barcodes by GSM prefix.
+  - Read each matrix.mtx.gz.
+  - Transpose from genes x cells to cells x genes.
+  - Read barcodes explicitly.
+  - Prefix obs_names with GSM accession to avoid barcode collisions.
+  - Read feature table and use gene symbol column as var_names.
+  - Attach curated sample-level metadata.
+  - Validate pre/post NACT metadata consistency.
+  - Concatenate selected AnnData objects.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Validate X, obs, var, sample counts and NaN status.
+  - Write standardized h5ad.
+  - Remove raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_mtx_standardizer.py
+  metadata_checker_needed: src/metadata_checker.py
+  file_pattern_detector_needed: src/file_pattern_detector.py
+  gene_mapping_needed: src/gene_mapping_and_deduplication.py
+  reason: this case reinforces GSM-prefix triplet matching and introduces pre/post NACT metadata validation
+
+potential_risks:
+  - First-triplet reuse bug can silently duplicate one sample across all GSMs.
+  - Barcode collisions are possible without GSM prefixing.
+  - Pre/Post treatment metadata must be validated.
+  - Matrix/features/barcodes must be matched by GSM prefix.
+  - Duplicate gene symbols require sparse aggregation.
+  - Detector should support Matrix Market naming variations.
