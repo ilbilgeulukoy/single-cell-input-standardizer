@@ -1,0 +1,193 @@
+case_id: case_013_2021_li_gse168652
+paper_id: 2021_Li
+geo_accession: GSE168652
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease_from_geo: cervical cancer
+  sample_context_from_geo: cervical cancer tissue and adjacent normal tissue
+  expected_histology_from_geo: cervical squamous cell carcinoma
+  hpv_status_from_geo: HPV18-positive
+  organism: Homo sapiens
+  project_scope_warning: original script contains ovarian-style metadata despite GEO cervical cancer context
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE168652_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE168652&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_nested_archive_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  top_level_files_detected: 3
+  nested_tar_files_detected: 2
+  selected_nested_tar: GSM5155196_Tumor.tar.gz
+  excluded_nested_tar:
+    - GSM5155197_Normal.tar.gz
+  raw_files_removed_after_inspection: 6
+  raw_directories_removed_after_inspection: 1
+
+detected_input_format:
+  format_label: nested_tar_single_sample_10x_matrix_market_triplet
+  nested_archive_required: true
+  standard_10x_matrix_market: true
+  standard_10x_h5: false
+  custom_count_table: false
+  single_sample_triplet: true
+  tumor_only_selected: true
+  normal_sample_present_but_excluded: true
+  raw_orientation: genes_x_cells_before_transpose
+  transpose_required_for_anndata: true
+
+nested_archive_structure:
+  top_level_archive: GSE168652_RAW.tar
+  selected_nested_archive: GSM5155196_Tumor.tar.gz
+  selected_inner_directory: Tumor
+  inner_files:
+    - Tumor/matrix.mtx.gz
+    - Tumor/features.tsv.gz
+    - Tumor/barcodes.tsv.gz
+
+selected_sample:
+  gsm_id: GSM5155196
+  sample_label: Tumor
+  matrix_file: Tumor/matrix.mtx.gz
+  features_file: Tumor/features.tsv.gz
+  barcodes_file: Tumor/barcodes.tsv.gz
+  matrix_shape_raw: "33694 genes x 14220 cells"
+  expected_anndata_shape: "14220 cells x 33694 genes"
+  features_shape: "33694 rows x 3 columns"
+  barcodes_shape: "14220 rows x 1 column"
+  matrix_orientation: genes_x_cells_before_transpose
+  transpose_required_for_anndata: true
+  gene_symbol_column_index: 1
+  duplicated_gene_symbols: 34
+
+sample_summary:
+  total_cells: 14220
+  selected_samples: 1
+  unique_gene_counts:
+    - 33694
+
+feature_table_structure:
+  columns:
+    - gene_ensembl_id
+    - gene_symbol
+    - feature_type
+  first_feature_examples:
+    - "ENSG00000243485 / RP11-34P13.3 / Gene Expression"
+    - "ENSG00000237613 / FAM138A / Gene Expression"
+    - "ENSG00000186092 / OR4F5 / Gene Expression"
+    - "ENSG00000238009 / RP11-34P13.7 / Gene Expression"
+    - "ENSG00000239945 / RP11-34P13.8 / Gene Expression"
+
+barcode_structure:
+  barcode_source: Tumor/barcodes.tsv.gz
+  first_barcode_examples:
+    - AAACCCAAGGACTAAT-1
+    - AAACCCAAGGTTACCT-1
+    - AAACCCAAGTCACAGG-1
+    - AAACCCACAAATACAG-1
+    - AAACCCACAAGCACAG-1
+  recommended_obs_name_rule: prefix_barcodes_with_gsm_id
+
+metadata_from_original_script:
+  gsm_id: GSM5155196
+  patient_id: N_OT_PT1
+  dataset_id: GSE168652
+  cancer_type: Ovarian
+  tumor_site: Metastasis
+  metastasis_site: Omentum
+  tumor_treatment: No
+  cancer_site_origin: Omentum
+  tumour_grade: SCC
+  tumour_stage: IIIc
+  histological_subtype: Serous
+  patient_ethnicity: Unknown
+
+metadata_sanity_check:
+  required: true
+  status: failed
+  geo_context_expected_disease: cervical cancer
+  geo_context_expected_histology: cervical squamous cell carcinoma
+  warnings:
+    - cancer_type in original script is Ovarian but GEO context is cervical cancer
+    - histological_subtype Serous conflicts with cervical squamous cell carcinoma context
+    - tumor_site Metastasis and metastasis_site Omentum look ovarian-style and conflict with GEO cervical tumor context
+  recommended_policy:
+    - do_not_silently_reuse_ovarian_metadata_defaults
+    - flag_dataset_as_non_ovarian_if_project_scope_is_ovarian_only
+    - if_used_for_format_testing_mark_biological_metadata_as_needs_correction
+  reusable_module_needed: src/metadata_sanity_checker.py
+
+scope_filtering_strategy:
+  required: true
+  project_scope: ovarian_cancer
+  dataset_scope_status: likely_out_of_scope
+  reason: GEO context describes cervical cancer rather than ovarian cancer
+  possible_actions:
+    - exclude_from_biological_ovarian_analysis
+    - keep_as_format_test_case_only
+    - keep_as_negative_control_for_metadata_sanity_checker
+  reusable_module_needed: src/project_scope_filter.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_ensembl_id_available: true
+  gene_symbol_available: true
+  feature_type_available: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_symbols_detected: true
+  duplicated_gene_symbols: 34
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+original_script_issues:
+  - curated biological metadata conflicts with GEO disease context
+  - normal sample exists but is not used
+  - np.isnan check references adata_combined although only adata exists in this single-sample script
+  - df_var duplicate handling is manually patched with drop_duplicates
+  - this case should not be treated as valid ovarian cohort data without metadata correction
+
+standardization_recipe:
+  - Download GSE168652_RAW.tar.
+  - Extract top-level archive.
+  - Detect nested GSM-level tar.gz files.
+  - Select GSM5155196_Tumor.tar.gz for tumor sample inspection.
+  - Extract nested Tumor directory.
+  - Detect matrix.mtx.gz, features.tsv.gz and barcodes.tsv.gz.
+  - Read Matrix Market matrix.
+  - Transpose from genes x cells to cells x genes.
+  - Read barcodes explicitly.
+  - Prefix obs_names with GSM accession.
+  - Read feature table and use gene symbol column.
+  - Run biological metadata sanity check before accepting curated metadata.
+  - If project is ovarian-only, mark dataset as out-of-scope or format-test-only.
+  - If retained, correct metadata to cervical cancer context.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Validate output.
+  - Write h5ad only after metadata scope decision.
+  - Remove raw files.
+
+tool_design_implication:
+  reusable_module_needed: src/nested_archive_extractor.py
+  tenx_module_needed: src/tenx_mtx_standardizer.py
+  metadata_sanity_module_needed: src/metadata_sanity_checker.py
+  project_scope_module_needed: src/project_scope_filter.py
+  gene_mapping_module_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces nested GSM tar archives and demonstrates that biological metadata can be inconsistent with GEO context
+
+potential_risks:
+  - Nested tar.gz archives require a second extraction step.
+  - Normal and tumor samples are both present but only tumor is selected.
+  - Curated metadata may be copied from ovarian defaults and be biologically wrong.
+  - Format parsing can succeed while biological metadata fails.
+  - This dataset may be out-of-scope for an ovarian-only cohort.
+  - Duplicate gene symbols require sparse aggregation.
+  - Single-sample script should not reference adata_combined.
