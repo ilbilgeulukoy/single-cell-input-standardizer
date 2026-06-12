@@ -1,0 +1,211 @@
+case_id: case_015_2024_denisenko_gse211956
+paper_id: 2024_Denisenko
+geo_accession: GSE211956
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: scRNA-seq plus spatial transcriptomics
+  organism: Homo sapiens
+  study_context: high-grade serous ovarian tumours with paired scRNA-seq and spatial data
+  selected_modality_for_this_project: single-cell RNA-seq
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE211956_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE211956&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  total_gsm_files_detected: 37
+  selected_txt_count_tables: 5
+  spatial_visium_sample_sets_detected: 8
+  spatial_files_detected: 32
+  raw_files_removed_after_inspection: 38
+
+detected_input_format:
+  format_label: mixed_archive_scrna_txt_count_tables_plus_spatial_visium
+  selected_format_for_standardization: per_sample_compressed_txt_gene_by_cell_count_tables
+  compressed_txt_count_tables: true
+  standard_10x_matrix_market_spatial_present: true
+  standard_10x_h5: false
+  requires_modality_filtering: true
+  raw_orientation: genes_x_cells
+  transpose_required_for_anndata: true
+
+selected_scrna_files:
+  GSM6506105:
+    patient_id: Y2
+    filename: GSM6506105_counts_Y2.txt.gz
+    n_cells: 328
+    n_genes: 19915
+    patient_token_matches_curated: true
+  GSM6506106:
+    patient_id: Y3
+    filename: GSM6506106_counts_Y3.txt.gz
+    n_cells: 6384
+    n_genes: 19915
+    patient_token_matches_curated: true
+  GSM6506107:
+    patient_id: Y5
+    filename: GSM6506107_counts_Y5.txt.gz
+    n_cells: 7588
+    n_genes: 19915
+    patient_token_matches_curated: true
+  GSM6506108:
+    patient_id: MJ10
+    filename: GSM6506108_counts_MJ10.txt.gz
+    n_cells: 426
+    n_genes: 19915
+    patient_token_matches_curated: true
+  GSM6506109:
+    patient_id: MJ11
+    filename: GSM6506109_counts_MJ11.txt.gz
+    n_cells: 1956
+    n_genes: 19915
+    patient_token_matches_curated: true
+
+sample_summary:
+  total_cells: 16682
+  unique_gene_counts:
+    - 19915
+  selected_samples: 5
+  patients:
+    - Y2
+    - Y3
+    - Y5
+    - MJ10
+    - MJ11
+
+excluded_modalities:
+  spatial_visium:
+    count_sample_sets: 8
+    gsm_range:
+      - GSM6506110
+      - GSM6506117
+    file_types:
+      - barcodes.tsv.gz
+      - features.tsv.gz
+      - matrix.mtx.gz
+      - spatial.zip
+    examples:
+      - GSM6506110_SP1_barcodes.tsv.gz
+      - GSM6506110_SP1_features.tsv.gz
+      - GSM6506110_SP1_matrix.mtx.gz
+      - GSM6506110_SP1_spatial.zip
+
+txt_table_structure:
+  file_extension: ".txt.gz"
+  separator: tab
+  row_index_contains: gene_symbols
+  columns_contain: cell_barcodes
+  first_gene_examples:
+    - AL627309.1
+    - AL669831.5
+    - LINC00115
+    - FAM41C
+    - NOC2L
+  first_cell_barcode_examples:
+    - AAACGGGTCACTCTTA_3
+    - AAAGCAAGTGCAACTT_3
+    - AAAGTAGCAGGTTTCA_3
+  note: pandas preview used gene symbols as row index, so no explicit first gene column was present in columns
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_level: sample_level
+  external_cell_metadata_available: false
+  dataset_id: GSE211956
+  cancer_type: Ovarian
+  tumor_site: Primary
+  metastasis_site: Unknown
+  tumor_treatment: Yes
+  cancer_site_origin: Unknown
+  tumour_grade: HGSC
+  tumour_stage: III-IV
+  histological_subtype: Serous
+  patient_ethnicity: Unknown
+  patient_id_source: filename_third_token
+  patient_token_validation: required
+
+modality_filtering_strategy:
+  required: true
+  keep:
+    - GSM6506105_counts_Y2.txt.gz
+    - GSM6506106_counts_Y3.txt.gz
+    - GSM6506107_counts_Y5.txt.gz
+    - GSM6506108_counts_MJ10.txt.gz
+    - GSM6506109_counts_MJ11.txt.gz
+  exclude:
+    - spatial Visium Matrix Market files
+    - spatial.zip files
+  reusable_module_needed: src/modality_filter.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_symbols_from_row_index: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_harmonization_strategy:
+  required: true
+  original_script_policy: common_gene_intersection_before_concatenation
+  unique_gene_counts_detected:
+    - 19915
+  note: all selected scRNA-seq count tables share the same detected gene count
+
+validation_strategy:
+  required: true
+  sparse_safe_nan_check: true
+  avoid_dense_nan_check_for_large_matrices: true
+  note: dense np.isnan on concatenated matrix may be memory-heavy
+
+original_script_issues:
+  - gzip -dk creates uncompressed txt files but script still reads txt.gz files
+  - decompression step is unnecessary and increases disk usage
+  - sc.read_text(fp).T indicates genes x cells input orientation
+  - NaN check before concatenation only checks the last adata object from the loop
+  - dense np.isnan on adata_combined.X may be memory-heavy
+  - gene mapping files are generated in directory_input rather than directory_annotated
+  - final last-check section inspects adata inconsistently after writing new_adata
+
+standardization_recipe:
+  - Download GSE211956_RAW.tar temporarily.
+  - Extract all supplementary files.
+  - Detect mixed scRNA-seq and spatial transcriptomics archive.
+  - Select only GSM6506105-GSM6506109 compressed TXT count tables for scRNA-seq processing.
+  - Exclude GSM6506110-GSM6506117 spatial Visium files.
+  - Read .txt.gz count tables directly without gzip decompression.
+  - Treat rows/index as genes and columns as cells.
+  - Transpose from genes x cells to cells x genes.
+  - Preserve cell barcode column names as obs_names.
+  - Prefix obs_names with GSM accession if needed to avoid barcode collisions.
+  - Add curated sample-level metadata.
+  - Validate filename patient token against curated patient_id.
+  - Harmonize common genes across selected samples.
+  - Concatenate selected AnnData objects.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Use sparse-safe NaN validation.
+  - Write standardized h5ad.
+  - Remove raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/count_table_standardizer.py
+  modality_filter_module_needed: src/modality_filter.py
+  data_size_policy_needed: src/data_size_policy.py
+  metadata_checker_needed: src/metadata_checker.py
+  validation_module_needed: src/validation.py
+  gene_mapping_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces compressed TXT gene-by-cell scRNA-seq count tables inside a mixed scRNA-seq plus spatial archive
+
+potential_risks:
+  - Mixed archive contains both scRNA-seq and spatial transcriptomics files.
+  - Spatial Visium files should not be processed as selected scRNA-seq samples.
+  - Unnecessary decompression can inflate disk usage.
+  - TXT files use gene symbols as row index rather than explicit gene column.
+  - Orientation detector must handle index-based gene identifiers.
+  - Cell barcode collisions are possible without sample prefixing.
+  - Dense NaN checks can be memory-heavy.
