@@ -17,6 +17,7 @@ TEST_SCRIPTS = [
     "scripts/test_nested_archive_extractor.py",
     "scripts/test_modality_filter.py",
     "scripts/test_gene_mapping_and_deduplication.py",
+    "scripts/test_inspect_input_cli.py",
 ]
 
 
