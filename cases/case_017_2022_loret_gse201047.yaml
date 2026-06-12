@@ -1,0 +1,424 @@
+case_id: case_017_2022_loret_gse201047
+paper_id: 2022_Loret
+geo_accession: GSE201047
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  selected_modality_for_this_project: single-cell RNA-seq
+  cohort_note: multi-site samples across PT1, PT2 and PT3 with N/T labels, tumor site, anatomical site, treatment status and stage metadata
+
+input_source:
+  source_database: GEO
+  raw_archive: GSE201047_RAW.tar
+  raw_url: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE201047&format=file"
+  recommended_processing_mode: local_temporary_download
+  raw_file_policy: download_extract_inspect_then_delete_raw_files
+
+raw_archive_summary:
+  total_gsm_files_detected: 22
+  selected_h5_files: 22
+  other_files_detected: 0
+  raw_files_removed_after_inspection: 23
+
+detected_input_format:
+  format_label: per_sample_old_10x_h5_v2_genome_group_hg19
+  per_sample_h5_files: true
+  standard_10x_h5: true
+  modern_10x_h5_matrix_group: false
+  old_10x_h5_genome_group: true
+  genome_group_detected: hg19
+  standard_10x_matrix_market: false
+  custom_count_table: false
+  raw_orientation: genes_x_cells
+  transpose_required_for_anndata: true
+  read_method_for_final_processing: scanpy.read_10x_h5
+  read_method_for_inspection: h5py
+  requires_old_h5_layout_support: true
+
+h5_structure:
+  top_level_keys:
+    - hg19
+  genome_group: hg19
+  genome_group_subkeys:
+    - barcodes
+    - data
+    - gene_names
+    - genes
+    - indices
+    - indptr
+    - shape
+  feature_id_source: hg19/genes
+  feature_name_source: hg19/gene_names
+  barcode_source: hg19/barcodes
+  matrix_shape_source: hg19/shape
+  first_gene_examples:
+    - "ENSG00000243485 / MIR1302-10"
+    - "ENSG00000237613 / FAM138A"
+    - "ENSG00000186092 / OR4F5"
+    - "ENSG00000238009 / RP11-34P13.7"
+    - "ENSG00000239945 / RP11-34P13.8"
+
+sample_summary:
+  total_cells: 106169
+  unique_gene_counts:
+    - 32738
+  number_of_samples: 22
+  duplicated_gene_names_per_sample: 95
+
+selected_samples:
+  GSM6049610:
+    patient_id: N_OT_PT1
+    n_cells: 5844
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: No
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049611:
+    patient_id: N_A_PT1
+    n_cells: 3509
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Ascites
+    tumor_treatment: No
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049612:
+    patient_id: N_PER_PT1
+    n_cells: 8074
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Peritoneum
+    tumor_treatment: No
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049613:
+    patient_id: N_OM_PT1
+    n_cells: 9473
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: No
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049614:
+    patient_id: N_BL_PT1
+    n_cells: 4269
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Bladder
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049615:
+    patient_id: T_OT_PT1
+    n_cells: 870
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049616:
+    patient_id: T_PER_PT1
+    n_cells: 1033
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Peritoneum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049617:
+    patient_id: T_OM_PT1
+    n_cells: 571
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049618:
+    patient_id: T_A_PT1
+    n_cells: 616
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Ascites
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049619:
+    patient_id: N_OT_PT2
+    n_cells: 934
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049620:
+    patient_id: N_A_PT2
+    n_cells: 4453
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Ascites
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049621:
+    patient_id: N_OM_PT2
+    n_cells: 2444
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049622:
+    patient_id: T_OT_PT2
+    n_cells: 9158
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049623:
+    patient_id: T_OM_PT2
+    n_cells: 2693
+    n_genes: 32738
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Omentum
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049624:
+    patient_id: T_PER_PT2
+    n_cells: 4247
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Peritoneum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIc
+    duplicated_gene_names: 95
+  GSM6049625:
+    patient_id: N_OT_PT3
+    n_cells: 4896
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049626:
+    patient_id: N_A_PT3
+    n_cells: 2374
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Ascites
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049627:
+    patient_id: N_PER_PT3
+    n_cells: 5507
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Peritoneum
+    tumor_treatment: No
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049628:
+    patient_id: T_OT_PT3
+    n_cells: 9608
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049629:
+    patient_id: T_A_PT3
+    n_cells: 6991
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Ascites
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049630:
+    patient_id: T_OM_PT3
+    n_cells: 9745
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Omentum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+  GSM6049631:
+    patient_id: T_PER_PT3
+    n_cells: 8860
+    n_genes: 32738
+    tumor_site: Primary
+    metastasis_site: Peritoneum
+    tumor_treatment: Yes
+    cancer_site_origin: Ovary
+    tumour_stage: IIIb
+    duplicated_gene_names: 95
+
+metadata_distribution:
+  tumor_site:
+    Metastasis: 6
+    Primary: 16
+  metastasis_site:
+    Omentum: 11
+    Ascites: 5
+    Peritoneum: 5
+    Bladder: 1
+  tumor_treatment:
+    No: 11
+    Yes: 11
+  cancer_site_origin:
+    Omentum: 6
+    Ovary: 16
+  tumour_stage:
+    IIIc: 15
+    IIIb: 7
+
+filename_token_strategy:
+  pattern: "GSM{accession}_{order}_{N_or_T}_{site}_{PT}_filtered_gene_bc_matrices_h5.h5"
+  examples:
+    - GSM6049610_1_N_OT_PT1_filtered_gene_bc_matrices_h5.h5
+    - GSM6049628_19_T_OT_PT3_filtered_gene_bc_matrices_h5.h5
+  token_meanings:
+    token_0: GSM accession
+    token_1: numeric sample order
+    token_2: N_or_T_label
+    token_3: anatomical_site_code
+    token_4: patient_code
+  note: original script parses token_4 as patient_id but does not use it; curated patient_id carries the full N/T/site/PT label
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_level: sample_level
+  external_cell_metadata_available: false
+  dataset_id: GSE201047
+  cancer_type: Ovarian
+  tumour_grade: HGSC
+  histological_subtype: Serous
+  patient_ethnicity: Unknown
+  sample_specific_fields:
+    - patient_id
+    - tumor_site
+    - metastasis_site
+    - tumor_treatment
+    - cancer_site_origin
+    - tumour_stage
+
+metadata_validation_strategy:
+  required: true
+  checks:
+    - all detected GSMs must exist in curated metadata
+    - filename N/T token should be consistent with tumor_treatment
+    - filename anatomical site token should be consistent with metastasis_site
+    - filename PT token should be consistent with curated patient_id
+    - stage should remain sample-specific
+  reusable_module_needed: src/metadata_checker.py
+
+sample_id_parsing_strategy:
+  required: true
+  patient_id_label_contains:
+    - N_or_T_label
+    - anatomical_site_code
+    - patient_code
+  example_labels:
+    - N_OT_PT1
+    - T_PER_PT3
+  reusable_module_needed: src/sample_id_parser.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_ensembl_id_available: true
+  gene_symbol_available: true
+  gene_symbols_from_old_h5_gene_names: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+gene_deduplication_strategy:
+  required: true
+  duplicated_gene_names_detected: true
+  duplicated_gene_names_per_sample: 95
+  preferred_method: sparse_aggregation_matrix
+  avoid_method: dense_pandas_toarray_groupby
+
+standardization_recipe:
+  - Download GSE201047_RAW.tar temporarily.
+  - Extract 22 per-sample h5 files.
+  - Validate all detected GSMs against curated metadata.
+  - Detect h5 layout.
+  - If /matrix exists, process modern 10x h5 v3 layout.
+  - If /matrix does not exist, detect genome group such as /hg19.
+  - Read old 10x h5 v2 keys from /hg19.
+  - Extract barcodes, genes, gene_names, data, indices, indptr and shape.
+  - Interpret raw matrix as genes x cells.
+  - Read each sample with scanpy.read_10x_h5 during final processing.
+  - Prefix obs_names with GSM accession before concatenation to avoid barcode collisions.
+  - Add curated multi-site sample-level metadata.
+  - Validate N/T, site and PT tokens against metadata.
+  - Harmonize common genes if needed.
+  - Concatenate all AnnData objects.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Convert metastasis_site to string before writing if needed.
+  - Drop to_remove from final var if present.
+  - Validate X, obs, var, sample counts and NaN status using sparse-safe checks.
+  - Write standardized h5ad.
+  - Remove raw downloaded files.
+
+tool_design_implication:
+  reusable_module_needed: src/tenx_h5_standardizer.py
+  old_h5_layout_support_needed: true
+  metadata_checker_needed: src/metadata_checker.py
+  sample_parser_needed: src/sample_id_parser.py
+  validation_module_needed: src/validation.py
+  gene_mapping_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces old 10x h5 genome-group layout and rich multi-site sample metadata
+
+original_script_issues:
+  - df.isna() is called but df is not defined
+  - patient_id is parsed from filename token split('_')[4] but this parsed variable is not used
+  - obs_names are not explicitly prefixed by GSM before concatenation
+  - dense np.isnan on adata_combined.X may be memory-heavy or invalid for sparse matrices
+  - metadata has multiple dimensions and needs validation against filename tokens
+
+potential_risks:
+  - h5 files use old /hg19 genome-group layout rather than modern /matrix layout
+  - barcode collisions are possible without GSM prefixing
+  - duplicated gene names require sparse aggregation
+  - N/T/site/PT labels can be mis-parsed if filename token logic is too brittle
+  - dense NaN checks can fail or become memory-heavy
