@@ -1,0 +1,265 @@
+case_id: case_016_2025_pounds_gse281120
+paper_id: 2025_Pounds
+geo_accession: GSE281120
+project_type: single_cell_input_standardization
+
+biological_context:
+  disease: high-grade serous ovarian cancer
+  assay: single-cell RNA-seq
+  organism: Homo sapiens
+  selected_modality_for_this_project: single-cell RNA-seq
+  cohort_note: omental metastasis tumor samples with one normal/non-metastasis sample excluded
+
+input_source:
+  source_database: GEO
+  raw_file: GSE281120_counts.csv.gz
+  raw_url: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE281nnn/GSE281120/suppl/GSE281120%5Fcounts%2Ecsv%2Egz"
+  recommended_processing_mode: large_local_temporary_download
+  raw_file_policy: download_inspect_then_delete_raw_file
+
+raw_file_summary:
+  file_size_mb: 733.99
+  total_columns_including_gene_column: 57491
+  total_cell_columns: 57490
+  gene_rows: 26199
+  raw_files_removed_after_inspection: 1
+
+detected_input_format:
+  format_label: single_global_compressed_csv_gene_by_cell_count_matrix_with_cell_suffix_samples
+  compressed_csv_count_table: true
+  single_global_matrix: true
+  per_sample_files: false
+  standard_10x_matrix_market: false
+  standard_10x_h5: false
+  raw_orientation: genes_x_cells
+  transpose_required_for_anndata: true
+  sample_identity_source: cell_barcode_suffix
+  requires_suffix_parser: true
+  requires_normal_sample_exclusion: true
+  requires_large_file_policy: true
+
+csv_structure:
+  file_extension: ".csv.gz"
+  separator: comma
+  first_column_name_after_pandas_read: Unnamed: 0
+  first_column_contains: gene_symbols
+  remaining_columns_contain: cell_barcodes
+  quoted_header_detected: true
+  parser_warning: manual gzip header parsing preserved quotes around cell names; suffix parser must strip quotes
+  first_gene_examples:
+    - AL627309.1
+    - AL669831.5
+    - FAM87B
+    - LINC00115
+    - FAM41C
+  first_cell_barcode_examples:
+    - AAACCCAAGACGAGCT.1_1
+    - AAACCCATCTGGTGGC.1_1
+    - AAACGAAAGAGAGAAC.1_1
+    - AAACGAAAGCCGGATA.1_1
+    - AAACGAAAGCTTCTAG.1_1
+
+cell_suffix_distribution:
+  raw_detected_suffix_counts_after_quote_cleanup:
+    "1": 5220
+    "2": 2271
+    "3": 3170
+    "5": 20363
+    "6": 5985
+    "7": 4344
+    "8": 5747
+    "9": 4055
+    "10": 6335
+  total_cells_before_exclusion: 57490
+  excluded_normal_suffix: "5"
+  excluded_normal_cells: 20363
+  total_cells_after_exclusion: 37127
+  final_expected_anndata_shape: "37127 cells x 26199 genes"
+
+selected_samples:
+  GSM8611246:
+    patient_id: Pt1
+    sample_suffix: "1"
+    n_cells: 5220
+    tumor_treatment: Yes
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611247:
+    patient_id: Pt2
+    sample_suffix: "2"
+    n_cells: 2271
+    tumor_treatment: No
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611248:
+    patient_id: Pt3
+    sample_suffix: "3"
+    n_cells: 3170
+    tumor_treatment: Yes
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611251:
+    patient_id: Pt6
+    sample_suffix: "6"
+    n_cells: 5985
+    tumor_treatment: Yes
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611252:
+    patient_id: Pt7
+    sample_suffix: "7"
+    n_cells: 4344
+    tumor_treatment: No
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611254:
+    patient_id: Pt8
+    sample_suffix: "8"
+    n_cells: 5747
+    tumor_treatment: Yes
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611255:
+    patient_id: Pt9
+    sample_suffix: "9"
+    n_cells: 4055
+    tumor_treatment: No
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+  GSM8611257:
+    patient_id: Pt10
+    sample_suffix: "10"
+    n_cells: 6335
+    tumor_treatment: No
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumour_grade: HGSC
+    histological_subtype: Serous
+
+excluded_samples:
+  suffix_5:
+    reason: normal_non_metastasis_sample
+    n_cells: 20363
+    original_script_rule: remove cells where sample_suffix equals 5
+
+suffix_to_gsm_mapping:
+  "1": GSM8611246
+  "2": GSM8611247
+  "3": GSM8611248
+  "6": GSM8611251
+  "7": GSM8611252
+  "8": GSM8611254
+  "9": GSM8611255
+  "10": GSM8611257
+
+metadata_strategy:
+  curated_sample_metadata_required: true
+  metadata_level: sample_level
+  external_cell_metadata_available: false
+  dataset_id: GSE281120
+  cancer_type: Ovarian
+  tumor_site: Metastasis
+  metastasis_site: Omentum
+  cancer_site_origin: Unknown
+  tumour_grade: HGSC
+  tumour_stage: Unknown
+  histological_subtype: Serous
+  patient_ethnicity: Unknown
+  sample_specific_fields:
+    - patient_id
+    - tumor_treatment
+    - sample_suffix
+
+sample_id_parsing_strategy:
+  required: true
+  parser_input: cell_barcode
+  parser_rule: split_cell_name_on_underscore_and_take_last_token
+  quote_cleanup_required: true
+  quote_cleanup_rule: strip leading and trailing double quotes before suffix parsing
+  missing_suffixes_by_design:
+    - "4"
+  excluded_suffixes_by_design:
+    - "5"
+  reusable_module_needed: src/sample_id_parser.py
+
+normal_sample_filtering_strategy:
+  required: true
+  filter_rule: remove sample_suffix == "5"
+  reason: normal/non-metastasis sample should not enter tumor cohort
+  reusable_module_needed: src/cohort_filter.py
+
+gene_mapping_strategy:
+  required: true
+  mapping_key: dataset_gene_symbol
+  gene_symbols_from_first_column: true
+  reusable_module_needed: src/gene_mapping_and_deduplication.py
+
+data_size_policy:
+  required: true
+  file_size_mb: 733.99
+  risk: dense global CSV read may require substantial memory
+  recommended_policy:
+    - inspect_header_before_full_read
+    - avoid_unnecessary_decompression
+    - consider_chunked_reading_for_validation
+    - warn_before_dense_AnnData_construction
+
+original_script_issues:
+  - downloads GSE281120_counts.csv.gz but searches for a .csv file
+  - list_abspath_sample is used for gzip decompression but is not defined
+  - decompression is unnecessary because pandas can read csv.gz directly
+  - this is one global matrix, not per-GSM files
+  - sample identity must be parsed from cell barcode suffix
+  - suffix 5 normal/non-metastasis sample must be excluded
+  - quoted CSV headers can break naive suffix parsing
+  - dense AnnData construction from a 734 MB CSV may be memory-heavy
+
+standardization_recipe:
+  - Download GSE281120_counts.csv.gz temporarily.
+  - Inspect header without full dense read.
+  - Read compressed CSV directly without gzip decompression.
+  - Treat first column as gene symbols.
+  - Treat remaining columns as cell barcodes.
+  - Strip quotes from cell barcode names if present.
+  - Parse sample_suffix from cell barcode after the final underscore.
+  - Remove cells with sample_suffix 5.
+  - Map remaining suffixes to GSM accessions.
+  - Add curated sample-level metadata based on GSM accession.
+  - Transpose genes x cells to cells x genes.
+  - Validate final selected cell counts per suffix.
+  - Generate gene mapping table using dataset_gene_symbol.
+  - Remove genes flagged as to_remove.
+  - Aggregate duplicated gene symbols using sparse aggregation.
+  - Validate X, obs and var with memory-safe checks.
+  - Write standardized h5ad.
+  - Remove raw downloaded file.
+
+tool_design_implication:
+  reusable_module_needed: src/global_matrix_metadata_standardizer.py
+  sample_parser_needed: src/sample_id_parser.py
+  cohort_filter_needed: src/cohort_filter.py
+  data_size_policy_needed: src/data_size_policy.py
+  count_table_module_needed: src/count_table_standardizer.py
+  gene_mapping_needed: src/gene_mapping_and_deduplication.py
+  reason: this case introduces a large single global CSV matrix where sample identity is encoded only in cell barcode suffixes
+
+potential_risks:
+  - sample identity can be lost if barcode suffixes are not parsed
+  - quoted CSV headers can create suffixes like 1" instead of 1
+  - normal sample suffix 5 can contaminate tumor cohort if not removed
+  - dense reading of a 734 MB compressed CSV may be memory-heavy
+  - no per-sample files are available, so metadata must be assigned after parsing cell names
