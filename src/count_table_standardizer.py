@@ -77,6 +77,8 @@ def _looks_like_cell_barcode(value: str) -> bool:
         r"^[ACGT]{8,}-\d+$",
         r"^[ACGT]{8,}\.\d+_\d+$",
         r"^[ACGT]{8,}_\d+$",
+        r"^[A-Za-z0-9.-]+_[ACGT]{8,}$",
+        r"^[A-Za-z0-9.-]+_[A-Za-z0-9.-]+_[ACGT]{8,}$",
         r"^cell[\w.-]*$",
     ]
 

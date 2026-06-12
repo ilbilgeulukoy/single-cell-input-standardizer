@@ -74,6 +74,8 @@ def _looks_like_cell_barcode(value: str) -> bool:
         r"^[ACGT]{8,}-\d+$",
         r"^[ACGT]{8,}\.\d+_\d+$",
         r"^[ACGT]{8,}_\d+$",
+        r"^[A-Za-z0-9.-]+_[ACGT]{8,}$",
+        r"^[A-Za-z0-9.-]+_[A-Za-z0-9.-]+_[ACGT]{8,}$",
         r"^cell[\w.-]*$",
     ]
 
@@ -209,18 +211,57 @@ def inspect_metadata_table(metadata_path: str | Path, preview_rows: int = 50) ->
     columns = [str(c) for c in preview.columns]
     lower_to_original = {c.lower(): c for c in columns}
 
-    candidate_cell_keywords = ["cell", "cell_id", "cellid", "barcode", "barcodes"]
-    candidate_sample_keywords = ["sample", "sample_id", "gsm", "patient", "patient_id", "library", "batch"]
+    candidate_cell_id_columns: list[str] = []
+    candidate_sample_columns: list[str] = []
 
-    candidate_cell_id_columns = [
-        col for col in columns
-        if any(keyword in col.lower() for keyword in candidate_cell_keywords)
+    cell_id_exact_names = {
+        "cell",
+        "cell_id",
+        "cellid",
+        "barcode",
+        "barcodes",
+        "cell barcode",
+        "cell_barcode",
+        "cell.name",
+        "cell_name",
+    }
+
+    sample_keywords = [
+        "sample",
+        "sample_id",
+        "samples",
+        "gsm",
+        "patient",
+        "patient_id",
+        "library",
+        "batch",
     ]
 
-    candidate_sample_columns = [
-        col for col in columns
-        if any(keyword in col.lower() for keyword in candidate_sample_keywords)
-    ]
+    for column in columns:
+        lower = column.lower()
+
+        if lower in cell_id_exact_names:
+            candidate_cell_id_columns.append(column)
+            continue
+
+        if lower.startswith("unnamed"):
+            values = preview[column].astype(str).head(20).tolist()
+            barcode_like = sum(_looks_like_cell_barcode(value) for value in values)
+
+            if values and barcode_like / len(values) >= 0.5:
+                candidate_cell_id_columns.append(column)
+                continue
+
+        values = preview[column].astype(str).head(20).tolist()
+        barcode_like = sum(_looks_like_cell_barcode(value) for value in values)
+
+        if values and barcode_like / len(values) >= 0.8:
+            candidate_cell_id_columns.append(column)
+
+    for column in columns:
+        lower = column.lower()
+        if any(keyword == lower or keyword in lower for keyword in sample_keywords):
+            candidate_sample_columns.append(column)
 
     warnings: list[str] = []
 
@@ -243,6 +284,7 @@ def inspect_metadata_table(metadata_path: str | Path, preview_rows: int = 50) ->
             "preview_rows": preview_rows,
             "columns": columns,
             "lower_to_original": lower_to_original,
+            "cell_id_detection_strategy": "exact_column_name_or_barcode_like_values",
         },
     )
 

@@ -1,38 +1,35 @@
 # macOS
 .DS_Store
 
-# Python cache
+# Python
 __pycache__/
 *.py[cod]
-.ipynb_checkpoints/
+*.egg-info/
 
 # Local environments
 .venv/
-venv/
-env/
-*.egg-info/
+.env/
 
-# Raw downloaded data
-data/**/raw/
-data/**/*.tar
-data/**/*.tar.gz
-data/**/*.gz
-data/**/*.zip
-
-# Large single-cell / omics files
-*.h5ad
-*.h5
-*.loom
-*.mtx
-*.mtx.gz
-
-# Generated local outputs
-data/**/outputs/
+# Raw and generated large data
+data/
 outputs/
+*.h5ad
+*.h5ad.gz
+*.csv.gz
+*.mtx.gz
+*.tar
+*.tar.gz
+*.zip
+*.h5
 
-# Keep placeholder files if needed
-!outputs/.gitkeep
-!data/**/outputs/.gitkeep
+# Generated case outputs
+generated_cases/*/output/
 
-# Generated SQLite case index
+# Local reports from test runs
+reports/test_inspect_input_cli/
+
+# Local archives
+archive/
+
+# Local databases
 database/*.db

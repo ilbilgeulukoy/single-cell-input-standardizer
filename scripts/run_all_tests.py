@@ -18,6 +18,8 @@ TEST_SCRIPTS = [
     "scripts/test_modality_filter.py",
     "scripts/test_gene_mapping_and_deduplication.py",
     "scripts/test_inspect_input_cli.py",
+    "scripts/test_global_sparse_writer.py",
+    "scripts/test_prepare_count_mtx.py",
 ]
 
 

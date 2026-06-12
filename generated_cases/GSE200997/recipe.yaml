@@ -1,0 +1,523 @@
+dataset_id: GSE200997
+dataset_name: CRC single-cell global UMI matrix
+input_format: single_global_compressed_csv_count_matrix
+reader: sparse_global_csv
+matrix_path: data/independent_gse200997/raw/GSE200997_GEO_processed_CRC_10X_raw_UMI_count_matrix.csv.gz
+metadata_path: data/independent_gse200997/raw/GSE200997_GEO_processed_CRC_10X_cell_annotation.csv.gz
+output_h5ad: outputs/gse200997_standardized_from_generated_recipe.h5ad
+orientation: gene_by_cell
+cell_id_column: 'Unnamed: 0'
+sample_id_column: samples
+keep_metadata_cells_only: true
+standardize_obs_schema: true
+obs_mappings:
+  sample_id: samples
+expected:
+  n_cells: 49859
+  n_genes: 23828
+  obs_columns:
+  - sample_id
+  - patient_id
+  - dataset_id
+  - cancer_type
+  - tumor_site
+  - metastasis_site
+  - tumor_treatment
+  - cancer_site_origin
+  - tumour_grade
+  - tumour_stage
+  - histological_subtype
+  - patient_ethnicity
+curated_sample_metadata:
+  B_cac10:
+    patient_id: B_cac10
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac11:
+    patient_id: B_cac11
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac14:
+    patient_id: B_cac14
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac15:
+    patient_id: B_cac15
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac4:
+    patient_id: B_cac4
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac6:
+    patient_id: B_cac6
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  B_cac7:
+    patient_id: B_cac7
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac1:
+    patient_id: T_cac1
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac10:
+    patient_id: T_cac10
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac11:
+    patient_id: T_cac11
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac12:
+    patient_id: T_cac12
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac13:
+    patient_id: T_cac13
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac14:
+    patient_id: T_cac14
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac15:
+    patient_id: T_cac15
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac16:
+    patient_id: T_cac16
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac2:
+    patient_id: T_cac2
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac3:
+    patient_id: T_cac3
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac4:
+    patient_id: T_cac4
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac5:
+    patient_id: T_cac5
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac6:
+    patient_id: T_cac6
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac7:
+    patient_id: T_cac7
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac8:
+    patient_id: T_cac8
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+  T_cac9:
+    patient_id: T_cac9
+    dataset_id: GSE200997
+    cancer_type: Colorectal
+    tumor_site: REVIEW_REQUIRED_FROM_CONDITION
+    metastasis_site: Unknown
+    tumor_treatment: Unknown
+    cancer_site_origin: Colon
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: Colorectal
+    patient_ethnicity: Unknown
+review_required:
+  fields:
+  - cancer_site_origin
+  - cancer_type
+  - histological_subtype
+  - metastasis_site
+  - patient_ethnicity
+  - patient_id
+  - tumor_site
+  - tumor_treatment
+  - tumour_grade
+  - tumour_stage
+  reason: Biological metadata interpretation must be manually reviewed before final
+    h5ad generation.
+evidence:
+  inspection_dir: reports/independent_gse200997
+  detected_format: single_global_compressed_csv_count_matrix
+  recommended_module: src/global_matrix_metadata_standardizer.py
+  data_size_policy: small_or_moderate_input
+  metadata_cell_id_column_candidates:
+  - 'Unnamed: 0'
+  metadata_sample_column_candidates:
+  - samples
+  n_detected_samples: 23
+metadata_sample_summary:
+- samples: B_cac10
+  n_cells: 2843
+  Condition:
+  - Normal
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: B_cac11
+  n_cells: 4645
+  Condition:
+  - Normal
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: B_cac14
+  n_cells: 4768
+  Condition:
+  - Normal
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: B_cac15
+  n_cells: 1035
+  Condition:
+  - Normal
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: B_cac4
+  n_cells: 2688
+  Condition:
+  - Normal
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: B_cac6
+  n_cells: 717
+  Condition:
+  - Normal
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: B_cac7
+  n_cells: 1577
+  Condition:
+  - Normal
+  Location:
+  - Right
+  MSI_Status:
+  - MSI-H
+- samples: T_cac1
+  n_cells: 1696
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac10
+  n_cells: 701
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac11
+  n_cells: 2866
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac12
+  n_cells: 4053
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSI-H
+- samples: T_cac13
+  n_cells: 2660
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac14
+  n_cells: 4077
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac15
+  n_cells: 3679
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac16
+  n_cells: 1381
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac2
+  n_cells: 1677
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac3
+  n_cells: 1188
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac4
+  n_cells: 1591
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac5
+  n_cells: 174
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac6
+  n_cells: 1693
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+- samples: T_cac7
+  n_cells: 1502
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSI-H
+- samples: T_cac8
+  n_cells: 999
+  Condition:
+  - Tumor
+  Location:
+  - Right
+  MSI_Status:
+  - MSS
+- samples: T_cac9
+  n_cells: 1649
+  Condition:
+  - Tumor
+  Location:
+  - Left
+  MSI_Status:
+  - MSS
+notes:
+- This recipe is semi-automatic and must be reviewed before final use.
+- Technical fields were inferred from inspection outputs.
+- Curated biological metadata fields marked REVIEW_REQUIRED must be completed by a
+  human reviewer.
+keep_extra_obs_columns: false
+script_archetype: global_matrix_with_cell_metadata

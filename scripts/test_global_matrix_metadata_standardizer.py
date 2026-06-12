@@ -47,6 +47,29 @@ def write_cell_metadata_tsv(path: Path):
     write_gzip_text(path, text)
 
 
+def write_cell_metadata_with_sample_prefixed_barcodes_csv(path: Path):
+    text = "\n".join(
+        [
+            "Unnamed: 0,samples,Condition,Location",
+            "B_cac10_AAACCTGAGTCAATAG,B_cac10,Normal,Left",
+            "B_cac10_AAACCTGCACAGCCCA,B_cac10,Normal,Left",
+            "B_cac11_AAACCTGCACTTCGAA,B_cac11,Tumor,Right",
+        ]
+    ) + "\n"
+    write_gzip_text(path, text)
+
+
+def write_cell_metadata_with_unnamed_index_csv(path: Path):
+    text = "\n".join(
+        [
+            "Unnamed: 0,samples,Condition,Location",
+            "AAACCCAAGACGAGCT.1_1,Pt1,Tumor,Primary",
+            "AAACGAAAGAGAGAAC.1_2,Pt2,Normal,Adjacent",
+        ]
+    ) + "\n"
+    write_gzip_text(path, text)
+
+
 def test_inspect_global_matrix_suffixes():
     reset_tmp()
     matrix_path = TMP / "GSE281120_counts.csv.gz"
@@ -75,6 +98,40 @@ def test_inspect_metadata_table():
 
     assert "cell_id" in result.candidate_cell_id_columns
     assert "sample" in result.candidate_sample_columns
+
+
+
+
+def test_metadata_unnamed_index_detected_as_cell_id():
+    reset_tmp()
+    metadata_path = TMP / "cell_metadata_index.csv.gz"
+    write_cell_metadata_with_unnamed_index_csv(metadata_path)
+
+    result = inspect_metadata_table(metadata_path)
+
+    print("\n=== Metadata table unnamed index inspection ===")
+    print(result)
+
+    assert "Unnamed: 0" in result.candidate_cell_id_columns
+    assert "samples" in result.candidate_sample_columns
+    assert not result.warnings
+
+
+
+
+def test_metadata_sample_prefixed_barcodes_detected_as_cell_id():
+    reset_tmp()
+    metadata_path = TMP / "cell_metadata_sample_prefixed.csv.gz"
+    write_cell_metadata_with_sample_prefixed_barcodes_csv(metadata_path)
+
+    result = inspect_metadata_table(metadata_path)
+
+    print("\n=== Metadata sample-prefixed barcode inspection ===")
+    print(result)
+
+    assert "Unnamed: 0" in result.candidate_cell_id_columns
+    assert "samples" in result.candidate_sample_columns
+    assert not result.warnings
 
 
 def test_read_global_matrix_with_metadata():
@@ -108,6 +165,8 @@ def test_read_global_matrix_with_metadata():
 def main():
     test_inspect_global_matrix_suffixes()
     test_inspect_metadata_table()
+    test_metadata_unnamed_index_detected_as_cell_id()
+    test_metadata_sample_prefixed_barcodes_detected_as_cell_id()
     test_read_global_matrix_with_metadata()
     print("\nAll global matrix metadata standardizer tests passed.")
 

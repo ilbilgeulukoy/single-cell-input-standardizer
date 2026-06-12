@@ -1,0 +1,52 @@
+dataset_id: GSE147082
+paper_id: per_sample_gene_by_cell_count_tables_example
+script_archetype: per_sample_count_tables_gene_by_cell
+raw_dir: data/olelekan_style_test/raw
+downloaded_dir: data/olelekan_style_test/raw/downloaded
+annotated_dir: generated_cases/2021_Olelekan_style/output
+sample_file_pattern: GSM*.csv.gz
+sample_id_regex: ^(GSM[0-9]+)
+compression: gzip
+gene_column_name: gene
+use_external_gene_mapping: false
+expected:
+  n_cells: REVIEW_REQUIRED
+  n_genes: REVIEW_REQUIRED
+  obs_columns:
+  - sample_id
+  - patient_id
+  - dataset_id
+  - cancer_type
+  - tumor_site
+  - metastasis_site
+  - tumor_treatment
+  - cancer_site_origin
+  - tumour_grade
+  - tumour_stage
+  - histological_subtype
+  - patient_ethnicity
+curated_sample_metadata:
+  GSM4416534:
+    patient_id: PT-3232
+    dataset_id: GSE147082
+    cancer_type: Ovarian
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: 'No'
+    cancer_site_origin: Left fallopian
+    tumour_grade: HGSC
+    tumour_stage: IIIc
+    histological_subtype: Serous
+    patient_ethnicity: Asian
+  GSM4416535:
+    patient_id: PT-5150
+    dataset_id: GSE147082
+    cancer_type: Ovarian
+    tumor_site: Metastasis
+    metastasis_site: Omentum
+    tumor_treatment: 'Yes'
+    cancer_site_origin: Unknown
+    tumour_grade: HGSC
+    tumour_stage: IVb
+    histological_subtype: Serous
+    patient_ethnicity: White

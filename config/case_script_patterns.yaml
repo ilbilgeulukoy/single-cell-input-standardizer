@@ -1,0 +1,178 @@
+version: 1
+
+description: >
+  Pattern library learned from real single-cell GEO preparation scripts.
+  Each pattern represents a recurring way to construct AnnData before applying
+  standardized obs metadata and the common gene standardization/postprocessing block.
+
+patterns:
+
+  per_sample_count_tables_gene_by_cell:
+    learned_from:
+      - 2021_Olelekan
+      - 2020_Tongton
+      - 2020_Guo
+      - 2024_Denisenko
+    input_signature:
+      - multiple sample-level count tables
+      - one file per sample
+      - genes are rows
+      - cells are columns
+      - sample_id is parsed from filename
+    adata_construction:
+      - discover sample files with pattern
+      - parse sample_id from filename
+      - read table with pandas
+      - set first column as gene index
+      - create AnnData with AnnData(df.T)
+      - add standardized obs metadata from curated dictionary
+      - concatenate sample AnnData objects
+    metadata_strategy:
+      - curated_sample_metadata dictionary keyed by sample_id
+      - missing metadata must fail explicitly
+      - REVIEW_REQUIRED values may be preserved
+    postprocessing:
+      - run optional external gene mapping backend
+      - remove genes flagged for removal
+      - aggregate duplicated gene symbols
+      - write final h5ad
+    generator_template: per_sample_count_tables_gene_by_cell
+
+  per_sample_count_tables_cell_by_gene:
+    learned_from:
+      - 2018_Shih
+    input_signature:
+      - multiple or single count tables
+      - cells are rows
+      - genes are columns
+      - sample_id may come from filename or metadata
+    adata_construction:
+      - read count table
+      - create AnnData directly without transpose
+      - assign sample_id
+      - add standardized obs metadata
+      - concatenate if multiple files
+    metadata_strategy:
+      - curated_sample_metadata dictionary
+      - optional metadata table join
+    postprocessing:
+      - run optional external gene mapping backend
+      - remove genes flagged for removal
+      - aggregate duplicated gene symbols
+      - write final h5ad
+    generator_template: per_sample_count_tables_cell_by_gene
+
+  global_matrix_with_cell_metadata:
+    learned_from:
+      - 2022_Ignacio
+      - 2023_Zhang
+      - 2024_Pounds
+      - GSE200997_independent_test
+    input_signature:
+      - one global count matrix
+      - usually genes are rows and cells are columns
+      - separate cell annotation table
+      - sample_id is present in metadata or inferred from cell barcode
+    adata_construction:
+      - stream or read global count matrix
+      - build AnnData as cells x genes
+      - load cell metadata
+      - align matrix cells with metadata cell IDs
+      - map sample_id column into standard obs
+      - apply curated sample metadata dictionary
+    metadata_strategy:
+      - obs_mappings maps dataset-specific columns to standard columns
+      - curated_sample_metadata dictionary keyed by sample_id
+      - raw metadata columns are excluded from final obs unless requested
+    postprocessing:
+      - optional external gene mapping backend
+      - validation report
+      - write final h5ad
+    generator_template: global_matrix_with_cell_metadata
+
+  tenx_mtx_triplet_single_or_multi_sample:
+    learned_from:
+      - 2020_Hippen
+      - 2020_Geistlinger
+      - 2022_Shen
+    input_signature:
+      - matrix.mtx or matrix.mtx.gz
+      - features.tsv or genes.tsv
+      - barcodes.tsv
+      - one folder per sample or one archive containing multiple samples
+    adata_construction:
+      - locate 10x matrix triplets
+      - read matrix/features/barcodes
+      - create AnnData as cells x genes
+      - infer sample_id from folder or filename
+      - add standardized obs metadata
+      - concatenate samples
+    metadata_strategy:
+      - curated_sample_metadata dictionary keyed by sample_id
+      - optional barcode suffix parsing
+    postprocessing:
+      - optional external gene mapping backend
+      - duplicate gene aggregation
+      - write final h5ad
+    generator_template: tenx_mtx_triplet_single_or_multi_sample
+
+  tenx_h5_single_or_multi_sample:
+    learned_from:
+      - 2020_Brand
+      - 2024_Loret
+    input_signature:
+      - one or more 10x filtered_feature_bc_matrix.h5 files
+      - sample_id from filename or folder
+    adata_construction:
+      - read h5 with scanpy or h5 reader
+      - assign sample_id
+      - add standardized obs metadata
+      - concatenate if multiple samples
+    metadata_strategy:
+      - curated_sample_metadata dictionary
+      - REVIEW_REQUIRED preserved when needed
+    postprocessing:
+      - optional external gene mapping backend
+      - duplicate gene aggregation
+      - write final h5ad
+    generator_template: tenx_h5_single_or_multi_sample
+
+  prebuilt_h5ad_with_metadata_rewrite:
+    learned_from:
+      - cases_with_existing_h5ad_objects
+    input_signature:
+      - h5ad file already available
+      - obs exists but is not standardized
+      - metadata may need remapping
+    adata_construction:
+      - read existing h5ad
+      - preserve X and var
+      - rewrite obs using standardized schema
+      - apply curated sample metadata dictionary
+    metadata_strategy:
+      - obs_mappings from existing obs columns
+      - curated_sample_metadata dictionary
+    postprocessing:
+      - optional external gene mapping backend if var is not standardized
+      - validation report
+      - write standardized h5ad
+    generator_template: prebuilt_h5ad_with_metadata_rewrite
+
+  nested_archive_then_detect:
+    learned_from:
+      - 2023_Li
+      - mixed_archive_cases
+    input_signature:
+      - tar/zip archive
+      - nested sample folders
+      - modality-specific files may be mixed
+    adata_construction:
+      - extract archive
+      - inspect nested files
+      - filter relevant modality
+      - delegate to one of the concrete templates above
+    metadata_strategy:
+      - curated_sample_metadata dictionary after sample discovery
+    postprocessing:
+      - delegated to selected template
+    generator_template: nested_archive_then_detect

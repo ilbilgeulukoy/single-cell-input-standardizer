@@ -1,0 +1,91 @@
+cases:
+
+  2021_Olelekan:
+    dataset_id: GSE147082
+    pattern: per_sample_count_tables_gene_by_cell
+    confidence: high
+    note: sample-level gene-by-cell csv.gz tables; AnnData constructed with df.T
+
+  2020_Tongton:
+    dataset_id: REVIEW_REQUIRED
+    pattern: per_sample_count_tables_gene_by_cell
+    confidence: medium
+    note: verify exact file structure from original script
+
+  2020_Guo:
+    dataset_id: REVIEW_REQUIRED
+    pattern: per_sample_count_tables_gene_by_cell
+    confidence: medium
+    note: verify exact file structure from original script
+
+  2024_Denisenko:
+    dataset_id: REVIEW_REQUIRED
+    pattern: per_sample_count_tables_gene_by_cell
+    confidence: medium
+    note: verify exact file structure from original script
+
+  2018_Shih:
+    dataset_id: REVIEW_REQUIRED
+    pattern: per_sample_count_tables_cell_by_gene
+    confidence: medium
+    note: verify whether table orientation is cell-by-gene or gene-by-cell
+
+  2020_Hippen:
+    dataset_id: REVIEW_REQUIRED
+    pattern: tenx_mtx_triplet_single_or_multi_sample
+    confidence: medium
+    note: verify archive/folder structure
+
+  2020_Geistlinger:
+    dataset_id: REVIEW_REQUIRED
+    pattern: tenx_mtx_triplet_single_or_multi_sample
+    confidence: medium
+    note: verify matrix/features/barcodes paths
+
+  2022_Shen:
+    dataset_id: REVIEW_REQUIRED
+    pattern: tenx_mtx_triplet_single_or_multi_sample
+    confidence: medium
+    note: verify sample_id parsing strategy
+
+  2020_Brand:
+    dataset_id: REVIEW_REQUIRED
+    pattern: tenx_h5_single_or_multi_sample
+    confidence: medium
+    note: verify h5 filename and sample metadata strategy
+
+  2024_Loret:
+    dataset_id: REVIEW_REQUIRED
+    pattern: tenx_h5_single_or_multi_sample
+    confidence: medium
+    note: verify h5/h5ad input type
+
+  2022_Ignacio:
+    dataset_id: REVIEW_REQUIRED
+    pattern: global_matrix_with_cell_metadata
+    confidence: medium
+    note: global matrix plus metadata style
+
+  2023_Zhang:
+    dataset_id: REVIEW_REQUIRED
+    pattern: global_matrix_with_cell_metadata
+    confidence: medium
+    note: global matrix plus metadata style
+
+  2024_Pounds:
+    dataset_id: REVIEW_REQUIRED
+    pattern: global_matrix_with_cell_metadata
+    confidence: medium
+    note: global matrix plus metadata style
+
+  2023_Li:
+    dataset_id: REVIEW_REQUIRED
+    pattern: nested_archive_then_detect
+    confidence: medium
+    note: nested archive or mixed file structure
+
+  GSE200997_independent_test:
+    dataset_id: GSE200997
+    pattern: global_matrix_with_cell_metadata
+    confidence: high
+    note: validated independent test; global gene-by-cell matrix plus cell annotation table
