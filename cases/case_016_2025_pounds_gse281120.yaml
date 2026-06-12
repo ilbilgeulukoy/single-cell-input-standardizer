@@ -41,11 +41,11 @@ detected_input_format:
 csv_structure:
   file_extension: ".csv.gz"
   separator: comma
-  first_column_name_after_pandas_read: Unnamed: 0
+  first_column_name_after_pandas_read: "Unnamed: 0"
   first_column_contains: gene_symbols
   remaining_columns_contain: cell_barcodes
   quoted_header_detected: true
-  parser_warning: manual gzip header parsing preserved quotes around cell names; suffix parser must strip quotes
+  parser_warning: "Manual gzip header parsing preserved quotes around cell names; suffix parser must strip quotes."
   first_gene_examples:
     - AL627309.1
     - AL669831.5
