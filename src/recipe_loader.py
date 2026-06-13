@@ -28,6 +28,10 @@ ARCHETYPE_REQUIRED_FIELDS = {
         "downloaded_dir",
         "sample_id_regex",
     ],
+    "tenx_h5_single_or_multi_sample": [
+        "downloaded_dir",
+        "sample_id_regex",
+    ],
 }
 
 

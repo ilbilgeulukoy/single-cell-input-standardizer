@@ -1,0 +1,56 @@
+dataset_id: GSE_TEST_10X_H5
+paper_id: tenx_h5_example
+script_archetype: tenx_h5_single_or_multi_sample
+
+raw_dir: data/test_tenx_h5_template
+downloaded_dir: data/test_tenx_h5_template
+annotated_dir: generated_cases/tenx_h5_example/output
+
+h5_file_pattern: "*.h5"
+sample_id_regex: "(GSM[0-9]+)"
+
+use_external_gene_mapping: false
+
+expected:
+  n_cells: REVIEW_REQUIRED
+  n_genes: REVIEW_REQUIRED
+  obs_columns:
+    - sample_id
+    - patient_id
+    - dataset_id
+    - cancer_type
+    - tumor_site
+    - metastasis_site
+    - tumor_treatment
+    - cancer_site_origin
+    - tumour_grade
+    - tumour_stage
+    - histological_subtype
+    - patient_ethnicity
+
+curated_sample_metadata:
+  GSM1:
+    patient_id: REVIEW_REQUIRED
+    dataset_id: GSE_TEST_10X_H5
+    cancer_type: REVIEW_REQUIRED
+    tumor_site: REVIEW_REQUIRED
+    metastasis_site: Unknown
+    tumor_treatment: REVIEW_REQUIRED
+    cancer_site_origin: REVIEW_REQUIRED
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: REVIEW_REQUIRED
+    patient_ethnicity: Unknown
+
+  GSM2:
+    patient_id: REVIEW_REQUIRED
+    dataset_id: GSE_TEST_10X_H5
+    cancer_type: REVIEW_REQUIRED
+    tumor_site: REVIEW_REQUIRED
+    metastasis_site: Unknown
+    tumor_treatment: REVIEW_REQUIRED
+    cancer_site_origin: REVIEW_REQUIRED
+    tumour_grade: Unknown
+    tumour_stage: Unknown
+    histological_subtype: REVIEW_REQUIRED
+    patient_ethnicity: Unknown
